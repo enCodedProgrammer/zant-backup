@@ -1,0 +1,17 @@
+query Author($length: Int = 6, $orderBy: AuthorOrderByInput = createdAt_ASC) {
+  author: authorsConnection(
+    first: $length,
+    orderBy: $orderBy
+  ) {
+    edges{
+      node {
+        name
+        avatar {
+          url
+        }
+        title
+        biography
+      }
+    }
+  }
+}

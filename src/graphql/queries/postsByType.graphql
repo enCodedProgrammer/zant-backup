@@ -1,0 +1,13 @@
+query PostsByType(
+	$length: Int = 6
+	$orderBy: PostOrderByInput = createdAt_DESC
+	$attribute: [PostCat!] = [education]
+) {
+	posts(first: $length, orderBy: $orderBy, where: { attribute_contains_some: $attribute }) {
+		slug
+		coverImage {
+			url
+		}
+		title
+	}
+}

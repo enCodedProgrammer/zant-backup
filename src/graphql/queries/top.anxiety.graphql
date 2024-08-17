@@ -1,0 +1,17 @@
+query TopAnxiety($length: Int = 6, $orderBy: AuthorOrderByInput = createdAt_DESC) {
+  author: authorsConnection(
+    first: $length
+    orderBy: $orderBy
+    where: {attribute_contains_some: anxiety}
+  ) {
+    edges {
+      node {
+        name
+        avatar {
+          url
+        }
+        title
+      }
+    }
+  }
+}

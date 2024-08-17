@@ -1,0 +1,13 @@
+query VideosByType($length: Int, $orderBy: VideoOrderByInput = createdAt_DESC, $attribute: [PostCat!] = [education]) {
+  videos(
+    first: $length
+    orderBy: $orderBy
+    where: {attribute_contains_some: $attribute}
+  ) {
+    title
+    coverImage {
+      url
+    }
+    description
+  }
+}

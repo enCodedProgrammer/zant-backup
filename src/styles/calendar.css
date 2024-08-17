@@ -1,0 +1,33 @@
+.react-calendar {
+    @apply !border-none rounded-2xl p-4
+}
+.react-calendar__month-view__weekdays {
+    @apply border-b-[1px] border-b-gray-50 mb-5
+}
+.react-calendar__month-view__weekdays abbr {
+    @apply text-md font-medium !no-underline
+}
+
+.react-calendar__tile.react-calendar__month-view__days__day abbr {
+    @apply text-md font-regular
+}
+
+.react-calendar__navigation__label__labelText--from {
+    @apply text-lg font-medium
+}
+
+.react-calendar__navigation__arrow {
+    @apply text-xl font-medium
+}
+.react-calendar__navigation button {
+    @apply !min-w-0
+}
+
+.react-calendar__tile {
+    @apply !rounded-full;
+    aspect-ratio: 1/1;
+}
+
+.react-calendar__tile.react-calendar__tile--now {
+    @apply bg-gray-100;
+}

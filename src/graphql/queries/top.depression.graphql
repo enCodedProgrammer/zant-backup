@@ -1,0 +1,17 @@
+query TopDepression($length: Int = 6, $orderBy: AuthorOrderByInput = createdAt_DESC) {
+  author: authorsConnection(
+    first: $length
+    orderBy: $orderBy
+    where: {attribute_contains_some: depression}
+  ) {
+    edges {
+      node {
+        name
+        avatar {
+          url
+        }
+        title
+      }
+    }
+  }
+}

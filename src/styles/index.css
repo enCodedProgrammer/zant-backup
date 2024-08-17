@@ -1,0 +1,3 @@
+.bg-onboarding {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%), url(/assets/img/onboarding.jpeg), lightgray -9.328px -285.146px / 127.222% 127.018% no-repeat;
+}

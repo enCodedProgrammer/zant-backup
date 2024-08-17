@@ -1,0 +1,280 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@import url(index.css);
+@import url(calendar.css);
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+	font-size: calc(100vw / 120);
+}
+
+:root {
+	--foreground-rgb: 0, 0, 0;
+	--background-start-rgb: 214, 219, 220;
+	--background-end-rgb: 255, 255, 255;
+
+	--theme-primary: #ef0caf;
+	--theme-secondary: #45ebfa;
+	--theme-yellow: #ecf700;
+	--theme-green: #10e565;
+	--theme-teal: #2cc5d3;
+	--theme-pink: #f1b0d6;
+	--theme-black: #000;
+	--theme-white: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--foreground-rgb: 255, 255, 255;
+		--background-start-rgb: 0, 0, 0;
+		--background-end-rgb: 0, 0, 0;
+	}
+}
+
+body {
+	color: black;
+	background: white;
+}
+
+@font-face {
+	font-family: "Neue Haas Grotesk Display Pro";
+	src: url("/assets/font/NeueHaasDisplayBlack.ttf") format("truetype");
+	font-weight: 700;
+}
+
+@font-face {
+	font-family: "Neue Haas Grotesk Display Pro";
+	src: url("/assets/font/NeueHaasDisplayBold.ttf") format("truetype");
+	font-weight: 600;
+}
+
+@font-face {
+	font-family: "Neue Haas Grotesk Display Pro";
+	src: url("/assets/font/NeueHaasDisplayThin.ttf") format("truetype");
+	font-weight: 200;
+}
+
+@font-face {
+	font-family: "Neue Haas Grotesk Display Pro";
+	src: url("/assets/font/NeueHaasDisplayLight.ttf") format("truetype");
+	font-weight: 300;
+}
+
+@font-face {
+	font-family: "Neue Haas Grotesk Display Pro";
+	src: url("/assets/font/NeueHaasDisplayMediu.ttf") format("truetype");
+	font-weight: 500;
+}
+
+@font-face {
+	font-family: "Neue Haas Grotesk Display Pro";
+	src: url("/assets/font/NeueHaasDisplayRoman.ttf") format("truetype");
+	font-weight: 400;
+}
+
+* {
+	@apply antialiased font-normal;
+	font-family: "Neue Haas Grotesk Display Pro", sans-serif;
+	font-weight: 400;
+}
+
+.scrollbar::-webkit-scrollbar {
+	width: 0.3rem;
+	border-radius: 100%;
+}
+.scrollbar::-webkit-scrollbar-track {
+	background-color: darkgrey;
+	border-radius: 20px;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+	background-color: var(--theme-primary);
+	outline: 0.1rem solid var(--theme-primary);
+	width: 0.3rem;
+	border-radius: 20px;
+}
+
+#nprogress .bar {
+	background-color: darkgrey !important;
+}
+
+.center {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.h-center {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.tz-2xs {
+}
+.tz-xs {
+}
+.tz-sm {
+}
+.tz-md {
+}
+.tz-lg {
+}
+.tz-xl {
+}
+
+.tz-primary {
+}
+.tz-secondary {
+}
+.tz-tertiary {
+}
+.tz-quaternary {
+}
+.tz-ghost {
+}
+
+.tz-circle {
+}
+
+[class*="text-lead-"] {
+	text-transform: uppercase;
+}
+
+.btn {
+	@apply w-auto h-auto min-h-[auto] font-normal btn-md shadow-none;
+}
+.btn-sm {
+	@apply py-2 px-3 text-xs;
+}
+.btn-md {
+	@apply py-4 px-6 text-lg;
+}
+.btn-lg {
+	@apply py-6 px-8 text-xl;
+}
+
+.input {
+	@apply border-secondary;
+	border-width: 1px;
+}
+
+.checkbox {
+	--chkfg: var(--theme-primary);
+	--chkbg: white;
+	animation: none !important;
+}
+
+.swiper-slide-active {
+	cursor: pointer !important;
+	transform: translate3d(0px, 0px, 0px) rotateX(0deg) rotateY(0deg) scale(1) !important;
+}
+
+.swiper-slide:not(.swiper-slide-active) .active {
+	display: none;
+}
+.swiper-slide-active .inactive {
+	display: none;
+} 
+
+.chat {
+	row-gap: 0.1rem;
+}
+.chat-image {
+	align-self: flex-start;
+}
+
+table {
+	@apply border-[1px] border-gray-50;
+}
+
+td, th {
+	@apply p-6 text-heading-2xs text-left font-regular;
+}
+
+th:not(:first-child), td:not(:first-child) {
+	@apply border-r-[1px] border-r-gray-50
+}
+
+th {
+	@apply bg-white;
+}
+
+tr:nth-child(even) {
+	@apply !bg-gray-25;
+}
+
+.toggle {
+	@apply [--tglbg:#D9D9D9] text-white;
+}
+.toggle:checked {
+	@apply [--tglbg:var(--theme-primary)] !text-white bg-transparent;
+}
+
+/* Input box */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}
+
+.range {
+	@apply !bg-gray-50;
+}
+
+.hidden-element {
+	display: none;
+}
+
+.modal-overlay {
+	background-color: #454444;
+	height: 100%;
+	width: 100%;
+
+}
+
+body.modal-open {
+		overflow: hidden;
+}
+
+
+.modal-relative {
+	position: relative;
+}
+
+.modal-contributors {
+	position: fixed !important;
+	top: 0 !important;
+	left: 0 !important;
+	width: 100% !important;
+	height: 100% !important;
+	background-color: rgba(0, 0, 0, 0.3) !important;
+	z-index: 1000 !important;
+	display: flex !important;
+	justify-content: center !important;
+	align-items: center !important;
+	opacity: 100% !important;
+	transition: visibility 0.3s, opacity 0.3s ease !important;
+}
+
+.modal-add-contributors {
+	opacity: 100% !important;
+	height: 100%;
+	position: fixed ;
+	left: 40% !important;
+	right: 0 !important;
+	top: 10% !important;
+}
+
+
+.modal-add-contributors-hide {
+	opacity: 0% !important;
+	height: 0% !important;
+	position:  relative !important;
+}
