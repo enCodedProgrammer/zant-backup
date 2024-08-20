@@ -105,7 +105,6 @@ export default function InviteStudentModal() {
 						onChange={handleFileChange}
 						id="file-upload-pdf"
 						/>
-
 												
 							<Button className="tz-md tz-teriary !w-48">Import .csv</Button>							
 							
