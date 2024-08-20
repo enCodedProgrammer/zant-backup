@@ -27,7 +27,6 @@
     "react-dom": "^18",
     "swiper": "^11.0.5",
     "tailwind-styled-components": "^2.2.0",
-    "urql": "^4.0.6",
     "verify-code-input-react": "^1.0.1"
   },
   "devDependencies": {

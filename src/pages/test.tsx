@@ -184,7 +184,7 @@ export default function Index() {
 			</div>
 
 			<div>
-				<FeaturedCard></FeaturedCard>
+				{/*<FeaturedCard></FeaturedCard>*/}
 			</div>
 
 			<div>

@@ -338,3 +338,19 @@ input#file-upload-pdf {
   .modal-close-btn {
 	font-size: 1.75rem !important;
   }
+
+  .align-invite-button {
+	margin-top: 20px !important;	
+}
+
+  .form-align {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: 100%;
+  }
+
+  .file-input-align {
+	text-align: center !important;
+  }

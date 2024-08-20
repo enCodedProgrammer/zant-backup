@@ -137,7 +137,7 @@ interface clientProps {
 			},
 		  });
 	
-		  setData(response.data);
+		  setData(response.data.items);
 		  console.log("userData", response.data);
 		} catch (err) {
 		  console.error("Error fetching data:", err);
@@ -270,8 +270,8 @@ interface clientProps {
 							</span>
 							</td>
 							<td className="text-heading-2xs font-regular">{user.last_name}</td>
-							<td className="text-heading-2xs font-regular">{user.type}</td>
-							<td className="text-heading-2xs font-regular">{user.sessions}</td>
+							<td className="text-heading-2xs font-regular">{user.is_provider ? "Provider" : "Client"}</td>
+							<td className="text-heading-2xs font-regular">{user._session_of_user}</td>
 							<td className="text-heading-2xs font-regular">{user.status==""? "Inactive" : user.status}</td>
 							<td className="text-heading-2xs font-regular">{user.date}</td>
 						</tr>
