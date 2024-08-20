@@ -1,6 +1,0 @@
-query Feeling {
-    feelings {
-        id
-        title
-    }
-}
