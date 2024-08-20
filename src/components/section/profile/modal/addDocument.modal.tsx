@@ -4,20 +4,27 @@ import { useState, ChangeEvent, FormEvent } from "react";
 
 interface AddDocumentModalProps {
   data: any;
+  auth: any;
+  setData: any;
   showDocumentModal: boolean;
   setShowDocumentModal: (show: boolean) => void;
 }
 
 const AddDocumentModal: React.FC<AddDocumentModalProps> = ({
   data,
+  setData,
+  auth,
   showDocumentModal,
   setShowDocumentModal,
 }) => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
+  const [fileSelected, setFileSelected] = useState<boolean>(false);
+  const [pictureChanged, setPicturechanged] = useState<boolean>(false);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
+      setFileSelected(true);
       setPdfFile(e.target.files[0]);
     }
   };
@@ -30,15 +37,32 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({
       return;
     }
 
+    const path = `/uploads/${pdfFile.name}`;
+    const mime = pdfFile.type;
+    const meta = JSON.stringify({ uploadedBy: 'User', timestamp: new Date().toISOString() });
+
     const formData = new FormData();
-    formData.append('pdf', pdfFile);
+    formData.append('content', pdfFile);
+    // formData.append("partneruser_id", data.id);
+    // formData.append("pdf[path]", path)
+    // formData.append("pdf[meta]", meta)
 
     try {
-      const response = await axios.post('https://your-xano-endpoint.com/upload', formData, {
+      const response = await axios.patch('https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/pdf_upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${auth}`,          
         },
       });
+      const authResponse = await axios.get("https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/auth/me", {
+        headers: {
+          Authorization: `Bearer ${auth}`,
+        },
+      });
+
+      setData(authResponse.data);
+      setPicturechanged(true);    
+      setShowDocumentModal(!showDocumentModal)       
       setUploadStatus('PDF uploaded successfully!');
       console.log('Upload response:', response.data);
     } catch (error) {
@@ -48,12 +72,12 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({
   };
 
   return (
-    <div className={showDocumentModal ? 'modal-contributors' : 'modal-add-contributors-hide'}>
-      {showDocumentModal && (
+    <div className={showDocumentModal && !pictureChanged ? 'modal-contributors' : 'modal-add-contributors-hide'}>
+      {showDocumentModal && !pictureChanged && (
         <div className="p-0 modal-box min-w-[33rem]">
           <div>
             <button
-              className="absolute top-9 right-6 btn btn-sm btn-circle btn-ghost"
+              className="absolute top-9 right-6 btn btn-sm btn-circle btn-ghost modal-close-btn"
               onClick={() => {
                 setShowDocumentModal(!showDocumentModal);
               }}>
@@ -73,23 +97,40 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({
             </div>
 
             <form onSubmit={handleSubmit}>
-              <div>
-                <label className="mb-1 ml-2 block text-sm text-gray-700 font-regular">
-                  Upload PDF
-                </label>
+            {!fileSelected ? 
+              <div style={{ position: 'relative', display: 'inline-block' }}>
+
                 <input
                   type="file"
                   accept="application/pdf"
-                  className="w-full input rounded-none"
+                  className="w-full input rounded-none custom-file-upload"
                   onChange={handleFileChange}
+                  id="file-upload-pdf"
+
                 />
+
+                <Button className="tz-md tz-primary !w-64" >
+                    Choose file
+                 </Button> 
+
               </div>
 
+
+
+              :
+
+              <>
+              <label className="mb-1 ml-2 block text-lg text-gray-700 font-regular">
+                  {pdfFile?.name}
+                </label>
               <div className="w-full text-center pt-8">
                 <Button className="tz-md tz-primary !w-64" type="submit">
                   Upload PDF
                 </Button>
               </div>
+              </>              
+              
+              }
 
               {uploadStatus && <p className="text-center pt-4">{uploadStatus}</p>}
             </form>

@@ -26,6 +26,7 @@ export default function ProfilePage() {
   const [data, setData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [showProfilePictureModal, setShowProfilePictureModal] = useState<boolean>(false);
+  const [authenticationToken, setAuthenticationToken] = useState<string>("")
 
   const router = useRouter();
 
@@ -50,6 +51,7 @@ export default function ProfilePage() {
         throw new Error("No auth token found, please login.");
       }
 
+	  setAuthenticationToken(authToken);
       const response = await axios.get<UserData>("https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/auth/me", {
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -94,13 +96,13 @@ export default function ProfilePage() {
 
         <div className="flex flex-col items-center">
           <div className="w-60 h-60 relative">
-            <Avatar url={data.partnerimage.url} />
+            <Avatar url={data.partnerimage?.url} />
             <IconButton className="absolute bottom-5 right-5 tz-sm tz-circle !w-10 !h-10" onClick={handleOpenProfilePictureModal}>
               <Image src={EditIcon} alt="edit icon" />
             </IconButton>
           </div>
           <div className="flex flex-col items-center">
-            <p className="text-heading-2xl font-medium">{data.Display_name}</p>
+            <p className="text-heading-2xl font-medium">{data?.Display_name}</p>
             <span className="text-heading-xs font-regular">Zant Partner</span>
           </div>
         </div>
@@ -119,13 +121,13 @@ export default function ProfilePage() {
       />
 
       <div hidden={tab !== "Organization"}>
-        <ProfileOverviewTab userData={data} />
+        <ProfileOverviewTab userData={data} setData={setData} auth={authenticationToken} />
       </div>
       <div hidden={tab !== "Contact"}>
         <ProfileMembersTab />
       </div>
       <div hidden={tab !== "Settings"}>
-        <ProfileSettingsTab userData={data} />
+        <ProfileSettingsTab userData={data} setData={setData} auth={authenticationToken} />
       </div>
 
 
@@ -133,6 +135,8 @@ export default function ProfilePage() {
         <div id="add_contributor_modal" className="modal-contributors">
           <AddProfilePictureModal
             data={data}
+			setData={setData}
+			auth={authenticationToken}
             showProfilePictureModal={showProfilePictureModal}
             setShowProfilePictureModal={setShowProfilePictureModal}
           />

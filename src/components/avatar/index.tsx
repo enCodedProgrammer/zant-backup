@@ -2,7 +2,7 @@ import classNames from "classnames"
 import { DetailedHTMLProps, HTMLAttributes } from "react"
 
 interface Props {
-	url: string
+	url: any
 }
 
 export default function Avatar({

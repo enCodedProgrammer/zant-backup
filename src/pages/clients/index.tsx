@@ -12,8 +12,15 @@ import { useState, useEffect } from "react"
 import Cookies from "js-cookie"
 import axios from "axios"
 
+interface clientProps {
+	data: any;
 
-export default function StatisticsPage() {
+}
+
+
+
+
+	const StatisticsPage: React.FC<clientProps> = ({}) => {
 	const router = useRouter()
 	const [users, setUsers] = useState<
 			{
@@ -111,8 +118,8 @@ export default function StatisticsPage() {
 	
 	
 		
-	const [data, setData] = useState()
-	const [loading, setLoading] = useState()
+		const [data, setData] = useState<any[]>([]);
+		const [loading, setLoading] = useState(true)
 
 
 
@@ -144,13 +151,14 @@ export default function StatisticsPage() {
 	  }, []);
 
 
-	{/*
+	
 
 	if (loading) return <div style={{fontSize:"28px", display:"flex", alignItems:"center", justifyContent: "center", height:"90vh", fontWeight: "700"}}>Loading...</div>;
 	if (!data) {
 		router.push('/auth/login');
 		return <div>Error loading data</div>;
-	*/}		
+	}		
+	
 		
 
 	return (
@@ -223,6 +231,7 @@ export default function StatisticsPage() {
 						<th>
 							<input className="checkbox rounded-none" type="checkbox" />
 						</th>
+						<th className="text-heading-2xs text-primary"></th>
 						<th className="text-heading-2xs text-primary">First Name</th>
 						<th className="text-heading-2xs">Last Name</th>
 						<th className="text-heading-2xs">Type</th>
@@ -232,7 +241,7 @@ export default function StatisticsPage() {
 					</tr>
 				</thead>
 				<tbody>
-					{users.map((user, k) => (
+					{data.map((user, k) => (
 						<tr key={k}>
 							<td>
 								<input className="checkbox rounded-none" type="checkbox" />
@@ -241,23 +250,29 @@ export default function StatisticsPage() {
 								className="cursor-pointer"
 								onClick={() => {
 									router.push(
-										"/clients/profile/" + user.firstName.substring(1),
+										"/clients/profile/" + user.first_name.substring(1),
 									)
 								}}
 							>
-								<span className="flex gap-10 text-heading-2xs items-center">
-									<img
+
+								<img
 										className="w-[5.25rem] h-[5.25rem]"
-										src={user.url}
+										src={user.photo ? user.photo : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjDghoMoSPxutcJPHr3TZGVWUk33lBQltZRw&usqp=CAU"}
 										alt="avatar"
-									/>
-									{user.firstName}
-								</span>
+									/>								
 							</td>
-							<td className="text-heading-2xs font-regular">{user.lastName}</td>
+							<td className="text-heading-2xs font-regular cursor-pointer" onClick={() => {
+									router.push(
+										"/clients/profile/" + user.first_name.substring(1),
+									)
+									}}>
+							<span className="flex gap-10 text-heading-2xs items-center">{user.first_name}
+							</span>
+							</td>
+							<td className="text-heading-2xs font-regular">{user.last_name}</td>
 							<td className="text-heading-2xs font-regular">{user.type}</td>
 							<td className="text-heading-2xs font-regular">{user.sessions}</td>
-							<td className="text-heading-2xs font-regular">{user.status}</td>
+							<td className="text-heading-2xs font-regular">{user.status==""? "Inactive" : user.status}</td>
 							<td className="text-heading-2xs font-regular">{user.date}</td>
 						</tr>
 					))}
@@ -273,4 +288,7 @@ export default function StatisticsPage() {
 			}} />
 		</div>
 	)
-}
+};
+
+
+export default StatisticsPage;
