@@ -405,3 +405,8 @@ color: red;
 .Toastify__progress-bar-theme--colored.Toastify__progress-bar--error {
 	background-color: red;
 }
+
+
+.pic-margin-top {
+	margin-top: 20px;
+}

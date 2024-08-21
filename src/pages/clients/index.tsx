@@ -231,7 +231,6 @@ interface clientProps {
 						<th>
 							<input className="checkbox rounded-none" type="checkbox" />
 						</th>
-						<th className="text-heading-2xs text-primary"></th>
 						<th className="text-heading-2xs text-primary">First Name</th>
 						<th className="text-heading-2xs">Last Name</th>
 						<th className="text-heading-2xs">Type</th>
@@ -246,27 +245,18 @@ interface clientProps {
 							<td>
 								<input className="checkbox rounded-none" type="checkbox" />
 							</td>
-							<td
-								className="cursor-pointer"
-								onClick={() => {
-									router.push(
-										"/clients/profile/" + user.first_name.substring(1),
-									)
-								}}
-							>
-
-								<img
-										className="w-[5.25rem] h-[5.25rem]"
-										src={user.photo ? user.photo : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjDghoMoSPxutcJPHr3TZGVWUk33lBQltZRw&usqp=CAU"}
-										alt="avatar"
-									/>								
-							</td>
-							<td className="text-heading-2xs font-regular cursor-pointer" onClick={() => {
-									router.push(
-										"/clients/profile/" + user.first_name.substring(1),
-									)
-									}}>
-							<span className="flex gap-10 text-heading-2xs items-center">{user.first_name}
+	
+							<td className="cursor-pointer" onClick={() => {
+								router.push("/clients/profile/" + user.first_name.substring(1),
+							)
+							}}>
+							<span className="flex gap-10 text-heading-2xs items-center">
+							<img
+							className="w-[5.25rem] h-[5.25rem] rounded-full"
+							src={user.photo ? user.photo : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjDghoMoSPxutcJPHr3TZGVWUk33lBQltZRw&usqp=CAU"}
+							alt="avatar"
+							/>										
+							{user.first_name}
 							</span>
 							</td>
 							<td className="text-heading-2xs font-regular">{user.last_name}</td>
@@ -280,12 +270,7 @@ interface clientProps {
 			</table>
 
 			<InviteStudentModal />
-			<DownloadModal onClickEvent={() => {
-				const modal = document.getElementById(
-					"download_modal",
-				) as HTMLDialogElement
-				modal.close("close")
-			}} />
+			<DownloadModal data={data} />
 		</div>
 	)
 };

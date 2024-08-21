@@ -122,9 +122,11 @@ export default function ClientProfilePage() {
 					Deactivate account
 				</Button>
 
-				<div className="flex flex-col items-center gap-6">
+				<div className="flex flex-col items-center gap-6 pic-margin-top">
 					<div className="relative">
+						<div style={{maxWidth: "100px"}}>
 						<Avatar url="/assets/img/profile/user3.png" />
+						</div>
 					</div>
 					<div className="flex flex-col items-center">
 						<p className="font-medium text-heading-2xl">Jenna Johnson</p>

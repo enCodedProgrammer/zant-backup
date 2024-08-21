@@ -44,7 +44,7 @@ export default function InviteStudentModal() {
 			'Authorization': `Bearer ${authToken}`
 		  }
 		});
-		  console.log('Respnse:', response.data);
+		  console.log('Response:', response.data);
 
 		  	if (response.data.email_address) {
 					
