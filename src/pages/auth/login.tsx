@@ -25,38 +25,34 @@ export default function LoginPage() {
 			},
 		  });
 	
-		  // Handle successful response
 		  console.log('User signed in successfully:', response.data);
 		  console.log("login data", response.data);
-		  //return response.data;
-		  		// Save authToken as a cookie
 			if (response.data.authToken) {
 				console.log("cookie set", response.data.authToken);
-				Cookies.set('authToken', response.data.authToken, { expires: 7 }); // Expires in 7 days
+				Cookies.set('authToken', response.data.authToken, { expires: 7 });
 			 }
 		} catch (error) {
-		  // Handle error response
-		  //console.error('Error signing in:', error.response?.data || error.message);
 		  throw error;
 		}
 	  };
 	
 	  const handleSignIn = async () => {
 		console.log(email, password)
-		//setLoading(true);
-		//setError(null);
 	
 		try {
 		  const response = await signIn(email, password);		  
 				
-		  // Redirect to a dashboard or handle the response as needed
 		  router.push('/profile');
 		} catch (error) {
-		  //setError(error.response?.data || 'An error occurred during sign-in');
 		} finally {
-		  //setLoading(false);
 		}
 	  };
+
+	  const authToken = Cookies.get("authToken");
+
+	  if (authToken) {
+		router.push("/profile")
+	  }      
 	  
 
 
@@ -96,7 +92,6 @@ export default function LoginPage() {
 						className="tz-lg tz-secondary self-center !w-[15rem]"
 						disabled={!email}
 						onClick={() => {
-							//router.push("step4")
 							handleSignIn()
 						}}
 					>

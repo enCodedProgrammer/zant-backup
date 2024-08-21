@@ -1,6 +1,8 @@
 import Button from "@/components/button";
 import axios from "axios";
 import { useState, ChangeEvent, FormEvent } from "react";
+import { toast } from 'react-toastify';
+
 
 interface AddProfilePictureModalProps {
   data: any;
@@ -22,6 +24,17 @@ const AddProfilePictureModal: React.FC<AddProfilePictureModalProps> = ({
   const [pictureChanged, setPicturechanged] = useState<boolean>(false);
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
 
+
+  const notifySuccess = () => toast.success(uploadStatus || "Picture uploaded successfully", 
+		{position: "bottom-left"},
+		
+
+	);
+	const notifyError = () => toast.error(uploadStatus || "Failed to upload picture",
+		{position: "bottom-left"}
+
+	);
+
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setPictureFile(e.target.files[0]);
@@ -39,7 +52,6 @@ const AddProfilePictureModal: React.FC<AddProfilePictureModalProps> = ({
 
     const formData = new FormData();
     formData.append('partners_img', pictureFile);
-    //formData.append('userId', data.id);
 
     try {
       const response = await axios.patch('https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/editpartnerprofile', formData, {
@@ -57,10 +69,12 @@ const AddProfilePictureModal: React.FC<AddProfilePictureModalProps> = ({
       setPicturechanged(true);    
       setShowProfilePictureModal(!showProfilePictureModal)  
       setUploadStatus('Picture uploaded successfully!');
+      notifySuccess()
       console.log('Upload response:', response.data);
 
     } catch (error) {
       setUploadStatus('Failed to upload picture.');
+      notifyError()
       console.error('Upload error:', error);
     }
   };

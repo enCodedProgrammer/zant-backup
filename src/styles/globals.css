@@ -22,6 +22,8 @@ html {
 	--theme-pink: #f1b0d6;
 	--theme-black: #000;
 	--theme-white: #fff;
+
+
 }
 
 @media (prefers-color-scheme: dark) {
@@ -354,3 +356,52 @@ input#file-upload-pdf {
   .file-input-align {
 	text-align: center !important;
   }
+
+  .Toastify__progress-bar-theme--colored.Toastify__progress-bar--success {
+	background-color: #fff !important;
+  }
+
+  .Toastify__progress-bar-theme--colored.Toastify__progress-bar--error {
+	color: rgb(184, 0, 0) !important;
+
+  }
+
+
+  .Toastify__toast-theme--dark {
+	background-color: #000 !important;
+	color: white !important;
+
+}
+.Toastify__toast-theme--light {
+	background-color: #000 !important;
+	color: white !important
+}
+
+
+.Toastify__progress-bar {
+	background-color: #fff !important;
+}
+
+.Toastify__toast-icon {
+	color: white;
+}
+
+.Toastify__toast-theme--colored.Toastify__toast--success {
+	background-color: #000;
+	color: #fff;
+}
+
+.Toastify__toast-theme--colored.Toastify__toast--error {
+background-color: black;
+color: red;
+}
+
+.Tastify__progress-bar-theme--colored.Toastify__progress-bar--success {
+	background-color: white;
+}
+.Toastify__progress-bar-theme--colored.Toastify__progress-bar--warning{
+
+}
+.Toastify__progress-bar-theme--colored.Toastify__progress-bar--error {
+	background-color: red;
+}

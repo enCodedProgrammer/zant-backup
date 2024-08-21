@@ -7,24 +7,31 @@ import axios from 'axios';
 
 interface NextApiRequestWithFile extends NextApiRequest {
   file: any;
+  authToken: any;
 }
 
-// Set up multer to use memory storage
 const upload = multer({ storage: multer.memoryStorage() });
 
-// Initialize next-connect router
 const apiRoute = createRouter<NextApiRequestWithFile, NextApiResponse>();
 
-// Use the multer middleware to handle the file upload
+
 apiRoute.use(upload.single('file'));
 
-// Define the POST method handler
 apiRoute.post(async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
   }
 
-  const emails: string[] = [];
+    const authToken = req.headers['authorization']?.split(' ')[1];
+
+    if (!authToken) {
+      return res.status(400).json({ error: 'No authToken provided' });
+    }
+
+    
+
+  console.log("auth received", req.authToken)
+  const email_address: string[] = [];
   const bufferStream = new stream.PassThrough();
   bufferStream.end(req.file.buffer);
   console.log("request madeeeeeee", req.file)
@@ -34,7 +41,7 @@ apiRoute.post(async (req, res) => {
         .pipe(csvParser())
         .on('data', (row) => {
           if (row.email) {
-            emails.push(row.email);
+            email_address.push(row.email);
           }
         })
         .on('end', () => {
@@ -45,10 +52,13 @@ apiRoute.post(async (req, res) => {
         });
     });
 
-    console.log(emails)
+    console.log("array", email_address)
 
-    // Send the emails list to Xano or handle it as needed
-    const response = await axios.post('https://your-xano-endpoint.com/api/send-emails', { emails });
+    const response = await axios.post('https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/upload/csv_array',  {email_address: email_address}, {
+			headers: {
+			  Authorization: `Bearer ${authToken}`,
+			},
+		  });
     console.log("upload response", response)
 
     res.status(200).json({ success: true, data: response.data });
@@ -57,7 +67,6 @@ apiRoute.post(async (req, res) => {
   }
 });
 
-// Export the handler created by next-connect
 export default apiRoute.handler();
 
 // Disable bodyParser since multer handles the file upload

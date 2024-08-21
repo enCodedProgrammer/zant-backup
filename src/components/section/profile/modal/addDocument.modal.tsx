@@ -1,6 +1,8 @@
 import Button from "@/components/button";
 import axios from "axios";
 import { useState, ChangeEvent, FormEvent } from "react";
+import { toast } from 'react-toastify';
+
 
 interface AddDocumentModalProps {
   data: any;
@@ -21,6 +23,16 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const [fileSelected, setFileSelected] = useState<boolean>(false);
   const [pictureChanged, setPicturechanged] = useState<boolean>(false);
+
+  const notifySuccess = () => toast.success(uploadStatus || "PDF Uploaded Successfully", 
+		{position: "bottom-left"},
+		
+
+	);
+	const notifyError = () => toast.error(uploadStatus || "Failed to upload PDF",
+		{position: "bottom-left"}
+
+	);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -43,9 +55,6 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({
 
     const formData = new FormData();
     formData.append('content', pdfFile);
-    // formData.append("partneruser_id", data.id);
-    // formData.append("pdf[path]", path)
-    // formData.append("pdf[meta]", meta)
 
     try {
       const response = await axios.patch('https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/pdf_upload', formData, {
@@ -64,9 +73,11 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({
       setPicturechanged(true);    
       setShowDocumentModal(!showDocumentModal)       
       setUploadStatus('PDF uploaded successfully!');
+      notifySuccess()
       console.log('Upload response:', response.data);
     } catch (error) {
       setUploadStatus('Failed to upload PDF.');
+      notifyError()
       console.error('Upload error:', error);
     }
   };

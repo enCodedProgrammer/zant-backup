@@ -1,6 +1,10 @@
 import Button from "@/components/button";
+import NotificationItem from "@/components/notification";
 import axios from "axios";
+import { notFound } from "next/navigation";
 import { useState, ChangeEvent, FormEvent } from "react";
+import { toast } from 'react-toastify';
+
 
 interface AddContributorModalProps {
   data: any;
@@ -42,6 +46,16 @@ const AddContributorModal: React.FC<AddContributorModalProps> = ({
   const [contributorAdded, setContributorAdded] = useState<boolean>(false)
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
 
+  const notifySuccess = () => toast.success(uploadStatus || "New Contributor Added", 
+		{position: "bottom-left"},
+		
+
+	);
+	const notifyError = () => toast.error(uploadStatus || "Error Adding New Contributor",
+		{position: "bottom-left"}
+
+	);
+
 
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -63,12 +77,10 @@ const AddContributorModal: React.FC<AddContributorModalProps> = ({
 
     const formDataToSend = new FormData();
   
-    // Append form data fields
     for (const key in formData) {
       formDataToSend.append(key, formData[key as keyof typeof formData]);
     }
   
-    // Append the contributor image URL (assuming img is the URL)
     formDataToSend.append("image_link", dummyImage);
 
 
@@ -77,14 +89,14 @@ const AddContributorModal: React.FC<AddContributorModalProps> = ({
     try {
       const response = await axios.post('https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/partnercontributor', formDataToSend);
       setUploadStatus("New Contributor Added")
+      notifySuccess()
       setContributorAdded(true)
       setShowModal(!showModal)
       console.log('Response:', response.data);
-      // Handle success (e.g., display a message, clear the form, etc.)
     } catch (error) {
       console.error('Error submitting form:', error);
       setUploadStatus("Error adding new contributor")
-      // Handle error (e.g., display an error message)
+      notifyError()
     }
 
     const refetch = await axios.get("https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/auth/me", {
@@ -184,7 +196,6 @@ const AddContributorModal: React.FC<AddContributorModalProps> = ({
                   </select>
                 </div>
 
-                {/* Predefined User ID Field */}
                 <div className="hidden-element">
                   <label className="mb-1 ml-2 block text-lg text-gray-700 font-regular label-margin">
                     User ID

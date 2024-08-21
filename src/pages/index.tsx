@@ -3,7 +3,9 @@ import Button from "@/components/button"
 import Logo from "@/components/logo"
 import Link from "next/link"
 
+
 export default function Index() {
+
 	return (
 		<div className="relative flex min-h-screen flex-col bg-center bg-onboarding bg-cover">
 			<header className="flex justify-center py-12">

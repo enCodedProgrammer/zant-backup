@@ -4,8 +4,20 @@ import LinkButton from "@/components/button/link"
 import PlayButton from "@/components/button/play"
 import Logo from "@/components/logo"
 import Link from "next/link"
+import { useRouter } from "next/router"
+import Cookies from "js-cookie"
+
 
 export default function AuthPage() {
+
+	const router = useRouter()
+
+	const authToken = Cookies.get("authToken");
+
+	if (authToken) {
+	  router.push("/profile")
+	}      
+	
 	return (
 		<div className="flex flex-col min-h-screen">
 			<header className="py-9 flex justify-center">

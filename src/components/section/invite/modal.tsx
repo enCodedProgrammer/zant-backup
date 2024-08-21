@@ -1,12 +1,28 @@
 import Button from "@/components/button"
-import { useState, ChangeEvent, FormEvent } from "react"
+import { useState, ChangeEvent, FormEvent, useRef } from "react"
 import axios from "axios";
+import Cookies from "js-cookie"
+import { toast } from 'react-toastify';
 
 export default function InviteStudentModal() {
+
+	const buttonRef = useRef<any>(null);
+	const notifySuccess = () => toast.success(uploadStatus || "Invite processing", 
+		{position: "bottom-left"},
+		
+
+	);
+	const notifyError = () => toast.error(uploadStatus || "File format error",
+		{position: "bottom-left"}
+
+	);
+
 	const [value, setValue] = useState('');
 	const [pdfFile, setPdfFile] = useState<any | null>(null);
 	const [uploadStatus, setUploadStatus] = useState<string | null>(null);
 	const [fileSelected, setFileSelected] = useState<boolean>(false);	
+
+	const authToken = Cookies.get("authToken");
 
 	const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files && e.target.files.length > 0) {
@@ -18,19 +34,32 @@ export default function InviteStudentModal() {
 	  const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		// Split the input value into an array of email addresses
 		const emailArray = value.split(',').map((email) => email.trim());
 	
-		// Send the email array to Xano
 		try {
-		  const response = await axios.post('https://your-xano-endpoint.com/api/send-emails', {
-			emails: emailArray,
-		  });
-		  console.log('Response:', response.data);
-		  // Handle success (e.g., display a message, clear the input, etc.)
+		  const response = await axios.post('https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/upload/csv_array', {
+			email_address: emailArray },
+			{		
+		  headers: {
+			'Authorization': `Bearer ${authToken}`
+		  }
+		});
+		  console.log('Respnse:', response.data);
+
+		  	if (response.data.email_address) {
+					
+			setUploadStatus('Invite Processing');
+			buttonRef.current.click()
+			notifySuccess()
+			console.log('Server response:', response);
+		  } else {
+			setUploadStatus('File format error');			
+			console.error('Server error:', response);
+			notifyError()
+		  }
 		} catch (error) {
 		  console.error('Error sending emails:', error);
-		  // Handle error (e.g., display an error message)
+		  notifyError()
 		}
 	  }
 
@@ -38,28 +67,32 @@ export default function InviteStudentModal() {
 	  const handleCSVSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 	
-		// if (pdfFile) {
-		//   setUploadStatus('Please select a CSV file');
-		//   return;
-		// }
+
 	
 		const formData = new FormData();
-		formData.append('file', pdfFile);
+		formData.append('file', pdfFile);		
 		
+
 		console.log(formData)
 		try {
 		  const response = await fetch('/api/upload', {
 			method: 'POST',
 			body: formData,
+			headers: {
+				'Authorization': `Bearer ${authToken}`
+			  },
 		  });
 	
 		  const result = await response.json();
 	
 		  if (response.ok) {
-			setUploadStatus('File uploaded successfully');
+			setUploadStatus('Invite Processing');
+			notifySuccess()
+			buttonRef.current.click()
 			console.log('Server response:', result);
 		  } else {
 			setUploadStatus('Failed to upload file');
+			notifyError()
 			console.error('Server error:', result);
 		  }
 		} catch (error) {
@@ -73,8 +106,8 @@ export default function InviteStudentModal() {
 	return (
 		<dialog id="invite_student_modal" className="modal">
 			<div className="p-0 modal-box max-w-[40]">
-				<form method="dialog">
-					<button className="absolute top-5 right-6 btn btn-sm btn-circle btn-ghost">
+				<form method="dialog" id="close-invite dialog">
+					<button className="absolute top-5 right-6 btn btn-sm btn-circle btn-ghost" ref={buttonRef}>
 						✕
 					</button>
 				</form>
@@ -96,8 +129,10 @@ export default function InviteStudentModal() {
 
 						<div className="flex flex-col gap-4 items-center">
 						<span className="text-sm text-gray-700">Or</span>
-						<div style={{ position: 'relative', display: 'inline-block' }}>
 						<form onSubmit={handleCSVSubmit}>
+						{!fileSelected ?
+
+						<div style={{ position: 'relative', display: 'inline-block' }}>
 						<input
 						type="file"
 						accept=".csv"
@@ -106,8 +141,10 @@ export default function InviteStudentModal() {
 						id="file-upload-pdf"
 						/>
 												
-							<Button className="tz-md tz-teriary !w-48">Import .csv</Button>							
+							<Button className="tz-md tz-teriary !w-48">Import .csv</Button>	
+						</div>						
 							
+						:
 							<>
 							<label className="mb-1 ml-2 block text-lg text-gray-700 font-regular file-input-align">
 								{pdfFile?.name}
@@ -118,12 +155,13 @@ export default function InviteStudentModal() {
 							  </Button>
 							</div>
 							</>  
+						}
 
-							
+						{uploadStatus && <p className="text-center pt-4">{uploadStatus}</p>}
 						</form>
 						</div>
-					</div>
-				</div>			
+	
+				</div>									
 			</div>
 		</dialog>
 	)
