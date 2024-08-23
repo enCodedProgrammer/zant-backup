@@ -6,12 +6,36 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import PenIcon from "@/asset/icons/system/Pen.svg"
 import GenericIconButton from "@/components/button/genericIcon"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Avatar from "@/components/avatar"
 
 export default function Step3Page() {
 	const router = useRouter()
 	const [image, setImage] = useState<any>();
+	const [name, setName] = useState("")
+
+    useEffect(() => {
+		const lUser = localStorage.getItem('user');
+		if(lUser) {
+		const lObject = JSON.parse(lUser);
+		setName(lObject.name)
+		}
+	},[])
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+		const userObject = JSON.parse(storedUser);
+
+         // Update the name and save the updated object back to localStorage
+         userObject.picture = image;
+         localStorage.setItem('user', JSON.stringify(userObject));
+
+         console.log('User object updated:', userObject);
+		 router.push("step4")
+      }
+	}
 
 	return (
 		<div className="flex min-h-screen flex-col">
@@ -28,7 +52,7 @@ export default function Step3Page() {
 					<div className="flex flex-col gap-4">
 						<div className="text-gray-400 text-lead-md text-center">Sign up</div>
 						<div className="font-bold text-heading-3xl text-center">
-							Thanks, Sad Girls Club. Please upload your
+							Thanks, {name}. Please upload your
 							<br />
 							company logo here.
 						</div>
@@ -36,7 +60,9 @@ export default function Step3Page() {
 				</div>
 				<div className="flex flex-1 flex-col justify-between items-center gap-10">
 					<div className="relative">
+						<div style={{maxWidth: "200px"}}>
 						<Avatar url={image ? image : "/assets/img/avatar-placeholder.png"} />
+						</div>
 						<div className="absolute right-0 bottom-0" style={{ transform: "translate(-1rem, -1rem)" }}>
 							<GenericIconButton
 								size="1.5rem" icon={PenIcon}
@@ -66,9 +92,7 @@ export default function Step3Page() {
 					</div>
 					<Button
 						className="tz-lg tz-secondary self-center !w-[15rem]"
-						onClick={() => {
-							router.push("step4")
-						}}
+						onClick={handleSubmit}
 					>
 						Next
 					</Button>

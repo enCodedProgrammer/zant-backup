@@ -10,6 +10,23 @@ export default function Step1Page() {
 	const [name, setName] = useState("")
 	const router = useRouter()
 
+	const handleSubmit = (e) => {
+		e.preventDefault();
+
+	const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+         const userObject = JSON.parse(storedUser);
+
+         // Update the name and save the updated object back to localStorage
+         userObject.name = name;
+         localStorage.setItem('user', JSON.stringify(userObject));
+
+         console.log('User object updated:', userObject);
+		 router.push("step2")
+      }
+	}
+
+
 	return (
 		<div className="flex min-h-screen flex-col">
 			<Link href={"/auth/login"}>
@@ -39,9 +56,7 @@ export default function Step1Page() {
 					<Button
 						className="tz-lg tz-secondary self-center !w-[15rem]"
 						disabled={!name}
-						onClick={() => {
-							router.push("step2")
-						}}
+						onClick={handleSubmit}
 					>
 						Next
 					</Button>

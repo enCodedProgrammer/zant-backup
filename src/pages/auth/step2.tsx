@@ -4,9 +4,30 @@ import Logo from "@/components/logo"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
+import { use, useState } from "react"
 
 export default function Step2Page() {
+
+	const [company, setCompany] = useState("");
 	const router = useRouter()
+
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+
+	const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+         const userObject = JSON.parse(storedUser);
+
+         // Update the name and save the updated object back to localStorage
+         userObject.company = company;
+         localStorage.setItem('user', JSON.stringify(userObject));
+
+         console.log('User object updated:', userObject);
+		 router.push("step3")
+      }
+	}
+
 
 	return (
 		<div className="flex min-h-screen flex-col">
@@ -29,7 +50,7 @@ export default function Step2Page() {
 					<div className="flex flex-col gap-5">
 						<div className="flex gap-6">
 							<div className="flex align-items-center px-4 py-5 border w-[32rem] text-xl">
-								<select>
+								<select onChange={(e) => setCompany(e.target.value)}>
 									<option selected>Non-Profit</option>
 									<option>Company</option>
 									<option>School</option>
@@ -61,9 +82,7 @@ export default function Step2Page() {
 					</div>
 					<Button
 						className="tz-lg tz-secondary self-center !w-[15rem]"
-						onClick={() => {
-							router.push("step3")
-						}}
+						onClick={handleSubmit}
 					>
 						Next
 					</Button>

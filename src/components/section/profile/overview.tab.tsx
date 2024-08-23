@@ -8,7 +8,7 @@ import GenericIconButton from "@/components/button/genericIcon"
 import LinkButton from "@/components/button/link"
 import StatCard from "@/components/card/stat"
 import { colors } from "@/types/color"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import axios from "axios"
 import {
 	BarController,
@@ -36,7 +36,7 @@ const activityData: ChartData<"bar", number[], string> = {
 }
 
 
-	interface Pdfs {
+	interface Pd {
 		url: string;
 		name: string;
 		type: string;
@@ -44,14 +44,18 @@ const activityData: ChartData<"bar", number[], string> = {
 
 	const ProfileOverviewTab = ({ userData, setData, auth }) => {
 
-		let pdfs: Pdfs[] = [];
-
-		if (userData) {
-			pdfs = userData?.pdf_files;
-		  }
+	
 
 		const [showModal, setShowModal] = useState(false);
 		const [showDocumentModal, setShowDocumentModal] = useState(false);
+		const [pdfs, setPd] = useState<Pd[]>([]);
+
+		
+		useEffect(() => {
+			if (userData) {
+				setPd(userData?.pdf_files);
+			  }	
+		},[userData])
 
 
 		const handleOpenDocumentModal = () => {
@@ -164,45 +168,103 @@ const activityData: ChartData<"bar", number[], string> = {
 			</div>
 
 
+		{pdfs?.length > 0 ? pdfs.map((pdf, index) => (
+		<div className="flex flex-col gap-8 w-full px-8 py-10" key={index}>
+				<div className="flex gap-4 justify-between items-center">
+				<span className="text-heading-sm">Documents</span>
+				<LinkButton
+					className="tz-md tz-primary"
+					onClick={handleOpenDocumentModal}
+				>
+					Add another document
+					<Image className="w-5 h-5 filter-primary" src={PlusCircleIcon} alt="plus" />
+				</LinkButton>
+				</div>
 
-<div className="flex flex-col gap-8 w-full px-8 py-10">
-        <div className="flex gap-4 justify-between items-center">
-          <span className="text-heading-sm">Documents</span>
-          <LinkButton
-            className="tz-md tz-primary"
-            onClick={handleOpenDocumentModal}
-          >
-            Add another document
-            <Image className="w-5 h-5 filter-primary" src={PlusCircleIcon} alt="plus" />
-          </LinkButton>
-        </div>
+				<div className="flex flex-col p-7 bg-white border-2 border-gray-50 rounded-2xl">
 
-        <div className="flex flex-col p-7 bg-white border-2 border-gray-50 rounded-2xl">
-        {pdfs.map((pdf, index) => (
-          <div className="py-5 flex gap-4 items-center"
-          key={index} >
-            <img
-              className="w-[3.75rem] h-[3.75rem] rounded-lg"
-              src="/assets/img/pdf.png"
-              alt="pdf"
-            />
-            <div className="w-full flex flex-col gap-1 justify-center">
-              <div className="flex gap-4 justify-between items-center">
-                <span className="text-lg font-medium">{pdf?.name}</span>
-                <LinkButton onClick={(e) => {
-                  e.preventDefault();                  
-                  handleDownload(pdf?.url, pdf?.name);
-                }}>
-                <GenericIconButton size="1.5rem" icon={DownloadIcon} />
-                </LinkButton>
-              </div>
-              <span className="text-lg opacity-50">{pdf?.type}</span>
-            </div>
-          </div>
-          ))}
-        </div>
- 
-      </div>
+				<div className="py-5 flex gap-4 items-center">
+					<img
+					className="w-[3.75rem] h-[3.75rem] rounded-lg"
+					src="/assets/img/pdf.png"
+					alt="pdf"
+					/>
+					<div className="w-full flex flex-col gap-1 justify-center">
+					<div className="flex gap-4 justify-between items-center">
+						<span className="text-lg font-medium">{pdf?.name}</span>
+						<LinkButton onClick={(e) => {
+						e.preventDefault();                  
+						handleDownload(pdf?.url, pdf?.name);
+						}}>
+						<GenericIconButton size="1.5rem" icon={DownloadIcon} />
+						</LinkButton>
+					</div>
+					<span className="text-lg opacity-50">{pdf?.type}</span>
+					</div>
+				</div>			
+
+				</div>
+		
+		</div>
+		))
+
+		:
+
+		<div className="flex flex-col gap-8 w-full px-8 py-10">
+				<div className="flex gap-4 justify-between items-center">
+				<span className="text-heading-sm">Documents</span>
+				<LinkButton
+					className="tz-md tz-primary"
+					onClick={handleOpenDocumentModal}
+				>
+					Update your documents
+					<Image className="w-5 h-5 filter-primary" src={PlusCircleIcon} alt="plus" />
+				</LinkButton>
+				</div>
+
+				<div className="flex flex-col p-7 bg-white border-2 border-gray-50 rounded-2xl">
+
+				<div className="py-5 flex gap-4 items-center">
+					<img
+					className="w-[3.75rem] h-[3.75rem] rounded-lg"
+					src="/assets/img/pdf.png"
+					alt="pdf"
+					/>
+					<div className="w-full flex flex-col gap-1 justify-center">
+					<div className="flex gap-4 justify-between items-center">
+						<span className="text-lg font-medium">Uploaded Document</span>
+						<LinkButton>
+						<GenericIconButton size="1.5rem" icon={DownloadIcon} />
+						</LinkButton>
+					</div>
+					<span className="text-lg opacity-50">PDF</span>
+					</div>
+				</div>	
+
+								<div className="py-5 flex gap-4 items-center">
+					<img
+					className="w-[3.75rem] h-[3.75rem] rounded-lg"
+					src="/assets/img/pdf.png"
+					alt="pdf"
+					/>
+					<div className="w-full flex flex-col gap-1 justify-center">
+					<div className="flex gap-4 justify-between items-center">
+						<span className="text-lg font-medium">Uploaded Document</span>
+						<LinkButton>
+						<GenericIconButton size="1.5rem" icon={DownloadIcon} />
+						</LinkButton>
+					</div>
+					<span className="text-lg opacity-50">PDF</span>
+					</div>
+				</div>		
+
+				</div>	
+
+		
+			</div>
+		}
+
+
 
 
 		{showDocumentModal && (

@@ -10,6 +10,25 @@ export default function AuthPage() {
 	const [exist, setExist] = useState<boolean | null>(null)
 	const router = useRouter()
 
+	if(exist) {
+		router.push("/auth/login");
+	}
+	
+	const handleNoExist = ()=> {
+		setExist(false)
+		if(!localStorage.getItem("user")) {
+			const user = { name: "", company: "", picture: "", email: "", phone: "", password: "" };
+			localStorage.setItem('user', JSON.stringify(user));
+		} else {
+			console.log("user already exist")
+			//router.push("/auth/login")
+		}
+
+		}
+
+
+
+
 	return (
 		<div className="flex min-h-screen flex-col">
 			<header className="flex justify-center py-12">
@@ -46,7 +65,7 @@ export default function AuthPage() {
 									type="radio"
 									name="yes_no"
 									checked={exist == false}
-									onChange={(e) => setExist(false)}
+									onChange={handleNoExist}
 									className="rounded-full radio radio-md radio-secondary [--chkfg:white]"
 								/>
 								<span className="flex-1 text-center label-text text-heading-2xs font-roboto">

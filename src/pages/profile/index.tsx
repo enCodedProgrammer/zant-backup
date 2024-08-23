@@ -59,6 +59,12 @@ export default function ProfilePage() {
       });
 
       setData(response.data);
+      const storedUser = localStorage.getItem('ZANT_USER');
+      if(storedUser){
+      const userObject = JSON.parse(storedUser);
+      userObject.picture = data?.partnerimage;
+      }
+      //localStorage.setItem("ZANT_USER", JSON.stringify(user));
       console.log("userData", response.data);
     } catch (err) {
       console.error("Error fetching data:", err);

@@ -38,17 +38,24 @@ interface ProfileSettingsTabProps {
 
 const ProfileSettingsTab: React.FC<ProfileSettingsTabProps> = ({ userData, setData, auth }) => {
   console.log("settings tab", userData);
-  let contributors: Contributor[] = [];
-  let pdfs: Pdfs[] = [];
+  // let contributors: Contributor[] = [];
 
   const [showModal, setShowModal] = useState(false);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
   const [pdfName, setPdfName] = useState<string>("");
 
-  if (userData) {
-    contributors = userData?._partnercontributor_of_partneruser;
-    pdfs = userData?.pdf_files;
-  }
+  const [pdfs, setPd] = useState<Pdfs[]>([]);
+  const [contributors, setContribututors] = useState<Contributor[]>([]);
+  const [initials, setInitials] = useState("");
+
+		
+  useEffect(() => {
+    if (userData) {
+      setPd(userData?.pdf_files);
+      setContribututors(userData._partnercontributor_of_partneruser)
+      }	
+  },[userData])
+
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -115,27 +122,29 @@ const ProfileSettingsTab: React.FC<ProfileSettingsTabProps> = ({ userData, setDa
         </div>
       </div>
 
-      <div className="flex flex-col gap-8">
-        <div className="flex gap-4 justify-between items-center">
-          <span className="text-heading-sm">Contributors</span>
 
-          <LinkButton
-            className="tz-md tz-primary"
-            onClick={handleOpenModal}
-          >
-            Add another contributor
-            <Image className="w-5 h-5 filter-primary" src={PlusCircleIcon} alt="plus" />
-          </LinkButton>
-        </div>
-      </div>
 
-      {contributors.map((contributor, index) => (
-        <div
-          key={index}
-          className="flex flex-col bg-white rounded-2xl border-2 border-gray-50 p-9 gap-9"
+      {contributors.length > 0 ? contributors.map((contributor, index) => (
+      <div key={index} className="flex flex-col gap-8">
+          <div className="flex gap-4 justify-between items-center">
+            <span className="text-heading-sm">Contributors</span>
+
+            <LinkButton
+              className="tz-md tz-primary"
+              onClick={handleOpenModal}
+            >
+              Add another contributor
+              <Image className="w-5 h-5 filter-primary" src={PlusCircleIcon} alt="plus" />
+            </LinkButton>
+          </div>
+
+        <div className="flex flex-col bg-white rounded-2xl border-2 border-gray-50 p-9 gap-9"
         >
           <div className="flex gap-5 items-center justify-between">
+            <div className="text-relative">
             <Avatar className="!w-28 !h-28" url={contributor?.profile_picture?.url} />
+            <div className="text-heading-lg text-absolute">{contributor?.first_name[0].toUpperCase() + " " + contributor?.last_name[0].toUpperCase()}</div>
+            </div>
             <div className="flex-1 flex flex-col justify-center gap-1">
               <span className="text-heading-lg">{`${contributor?.first_name} ${contributor?.last_name}`}</span>
               <span className="text-xl">{contributor?.user_permission}</span>
@@ -192,46 +201,198 @@ const ProfileSettingsTab: React.FC<ProfileSettingsTabProps> = ({ userData, setDa
             </LinkButton>
           </div>
         </div>
-      ))}
-
+      </div>
+      ))
+      
+      :
+        
       <div className="flex flex-col gap-8">
-        <div className="flex gap-4 justify-between items-center">
+          <div className="flex gap-4 justify-between items-center">
+            <span className="text-heading-sm">Contributors</span>
+
+            <LinkButton
+              className="tz-md tz-primary"
+              onClick={handleOpenModal}
+            >
+              Update your contributors
+              <Image className="w-5 h-5 filter-primary" src={PlusCircleIcon} alt="plus" />
+            </LinkButton>
+          </div>
+
+        <div className="flex flex-col bg-white rounded-2xl border-2 border-gray-50 p-9 gap-9">
+          <div className="flex gap-5 items-center justify-between">
+            <Avatar className="!w-28 !h-28" url="/assets/img/ad.png" />
+            <div className="flex-1 flex flex-col justify-center gap-1">
+              <span className="text-heading-lg">Alex Darcia</span>
+              <span className="text-xl">Editor</span>
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-1 ml-2 block text-lg text-gray-700 font-regular">
+              Permissions
+            </label>
+            <input className="w-full input rounded-none" value="Editor" readOnly />
+          </div>
+
+          <span className="text-xl font-medium">Details</span>
+
+          <div className="grid grid-cols-2 gap-7">
+            <div>
+              <label className="mb-1 ml-2 block text-lg text-gray-700 font-regular">
+                First Name
+              </label>
+              <input className="w-full input rounded-none" value="Alex" readOnly />
+            </div>
+            <div>
+              <label className="mb-1 ml-2 block text-lg text-gray-700 font-regular">
+                Last Name
+              </label>
+              <input className="w-full input rounded-none" value="Darcia" readOnly />
+            </div>
+
+            <div className="col-span-2">
+              <label className="mb-1 ml-2 block text-lg text-gray-700 font-regular">
+                Title
+              </label>
+              <input className="w-full input rounded-none" value="Administrator" readOnly />
+            </div>
+
+            <div>
+              <label className="mb-1 ml-2 block text-lg text-gray-700 font-regular">
+                Email
+              </label>
+              <input className="w-full input rounded-none" value="Alexdee@gmail.com" readOnly />
+            </div>
+            <div>
+              <label className="mb-1 ml-2 block text-lg text-gray-700 font-regular">
+                Phone Number
+              </label>
+              <input className="w-full input rounded-none" value="+123487890" readOnly />
+            </div>
+          </div>
+
+          <div>
+            <LinkButton className="tz-md tz-primary">
+              Send reset password link
+            </LinkButton>
+          </div>
+        </div>
+        </div>
+      }
+
+    
+
+
+      {pdfs?.length > 0 ? pdfs.map((pdf, index) => (
+
+
+        <div key={index} className="flex flex-col gap-8">
+          <div className="flex gap-4 justify-between items-center">
           <span className="text-heading-sm">Documents</span>
           <LinkButton
             className="tz-md tz-primary"
             onClick={handleOpenDocumentModal}
           >
-            Add another document
+            Upload another document
             <Image className="w-5 h-5 filter-primary" src={PlusCircleIcon} alt="plus" />
           </LinkButton>
+          </div>      
+
+
+            <div className="flex flex-col p-7 bg-white border-2 border-gray-50 rounded-2xl">
+
+              <div className="py-5 flex gap-4 items-center">
+                <img
+                className="w-[3.75rem] h-[3.75rem] rounded-lg"
+                src="/assets/img/pdf.png"
+                alt="pdf"
+                />
+                <div className="w-full flex flex-col gap-1 justify-center">
+                <div className="flex gap-4 justify-between items-center">
+                  <span className="text-lg font-medium">{pdf?.name}</span>
+                  <LinkButton onClick={(e) => {
+                  e.preventDefault();                  
+                  handleDownload(pdf?.url, pdf?.name);
+                  }}>
+                  <GenericIconButton size="1.5rem" icon={DownloadIcon} />
+                  </LinkButton>
+                </div>
+                <span className="text-lg opacity-50">{pdf?.type}</span>
+                </div>
+              </div>	
+
+          </div>	
+
         </div>
 
-        <div className="flex flex-col p-7 bg-white border-2 border-gray-50 rounded-2xl">
-        {pdfs.map((pdf, index) => (
-          <div className="py-5 flex gap-4 items-center"
-          key={index} >
-            <img
+      ))
+
+		:
+
+      <div className="flex flex-col gap-8">
+      	<div className="flex gap-4 justify-between items-center">
+				<span className="text-heading-sm">Documents</span>
+				<LinkButton
+					className="tz-md tz-primary"
+					onClick={handleOpenDocumentModal}
+				>
+					Update your documents
+					<Image className="w-5 h-5 filter-primary" src={PlusCircleIcon} alt="plus" />
+				</LinkButton>
+				</div>      
+
+
+          <div className="flex flex-col p-7 bg-white border-2 border-gray-50 rounded-2xl">
+
+            <div className="py-5 flex gap-4 items-center">
+              <img
               className="w-[3.75rem] h-[3.75rem] rounded-lg"
               src="/assets/img/pdf.png"
               alt="pdf"
-            />
-            <div className="w-full flex flex-col gap-1 justify-center">
+              />
+              <div className="w-full flex flex-col gap-1 justify-center">
               <div className="flex gap-4 justify-between items-center">
-                <span className="text-lg font-medium">{pdf?.name}</span>
-                <LinkButton onClick={(e) => {
-                  e.preventDefault();                  
-                  handleDownload(pdf?.url, pdf?.name);
-                }}>
+                <span className="text-lg font-medium">Uploaded Document</span>
+                <LinkButton>
                 <GenericIconButton size="1.5rem" icon={DownloadIcon} />
                 </LinkButton>
               </div>
-              <span className="text-lg opacity-50">{pdf?.type}</span>
+              <span className="text-lg opacity-50">PDF</span>
+              </div>
+            </div>	
+
+            <div className="py-5 flex gap-4 items-center">
+            <img
+            className="w-[3.75rem] h-[3.75rem] rounded-lg"
+            src="/assets/img/pdf.png"
+            alt="pdf"
+            />
+            <div className="w-full flex flex-col gap-1 justify-center">
+            <div className="flex gap-4 justify-between items-center">
+              <span className="text-lg font-medium">Uploaded Document</span>
+              <LinkButton>
+              <GenericIconButton size="1.5rem" icon={DownloadIcon} />
+              </LinkButton>
             </div>
-          </div>
-          ))}
-        </div>
- 
-      </div>
+            <span className="text-lg opacity-50">PDF</span>
+            </div>
+          </div>		
+
+        </div>	
+
+		  </div>
+		}
+
+
+
+
+
+
+
+
+
+
 
       {showModal && (
         <div id="add_contributor_modal" className="modal-contributors">

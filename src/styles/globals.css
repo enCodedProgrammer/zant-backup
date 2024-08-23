@@ -410,3 +410,14 @@ color: red;
 .pic-margin-top {
 	margin-top: 20px;
 }
+
+.text-relative {
+	position: relative !important;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.text-absolute {
+	position: absolute;
+}
