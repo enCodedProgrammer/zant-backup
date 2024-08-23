@@ -16,16 +16,6 @@ export default function Header({ close = false }: { close?: boolean }) {
 	const [scrolled, setScrolled] = useState(false)
 	const router = useRouter()
 
-	const [picture, setPic] = useState("")
-	const storedUser = localStorage.getItem("ZANT_USER")
-	
-	useEffect(() => {
-	if(storedUser){
-	const userObject = JSON.parse(storedUser);
-	setPic(userObject.picture)
-	}
-	}, [])
-
 	const scrollEvent = () => {
 		setScrolled(window.scrollY > 20)
 	}
@@ -57,7 +47,7 @@ export default function Header({ close = false }: { close?: boolean }) {
 			<Link href={"/profile"} className="inline-block h-12 w-12">
 				<div className="avatar">
 					<div className="rounded-full">
-						<img src={picture} alt="avatar" />
+						<img src="/assets/img/university.png" alt="avatar" />
 					</div>
 				</div>
 			</Link>
