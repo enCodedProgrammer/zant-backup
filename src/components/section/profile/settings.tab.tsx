@@ -283,26 +283,41 @@ const ProfileSettingsTab: React.FC<ProfileSettingsTabProps> = ({ userData, setDa
 
     
 
+      {pdfs?.length>0 ?
+                <div className="flex gap-4 justify-between items-center">
+                <span className="text-heading-sm">Documents</span>
+                <LinkButton
+                  className="tz-md tz-primary"
+                  onClick={handleOpenDocumentModal}
+                >
+                  Add another document
+                  <Image className="w-5 h-5 filter-primary" src={PlusCircleIcon} alt="plus" />
+                </LinkButton>
+                </div>
 
-      {pdfs?.length > 0 ? pdfs.map((pdf, index) => (
+                :
+
+                <div className="flex gap-4 justify-between items-center">
+                <span className="text-heading-sm">Documents</span>
+                <LinkButton
+                  className="tz-md tz-primary"
+                  onClick={handleOpenDocumentModal}
+                >
+                  Update your documents
+                  <Image className="w-5 h-5 filter-primary" src={PlusCircleIcon} alt="plus" />
+                </LinkButton>
+                </div>   
+        }
 
 
-        <div key={index} className="flex flex-col gap-8">
-          <div className="flex gap-4 justify-between items-center">
-          <span className="text-heading-sm">Documents</span>
-          <LinkButton
-            className="tz-md tz-primary"
-            onClick={handleOpenDocumentModal}
-          >
-            Upload another document
-            <Image className="w-5 h-5 filter-primary" src={PlusCircleIcon} alt="plus" />
-          </LinkButton>
-          </div>      
 
 
+        <div className="flex flex-col gap-8">     
             <div className="flex flex-col p-7 bg-white border-2 border-gray-50 rounded-2xl">
 
-              <div className="py-5 flex gap-4 items-center">
+            {pdfs?.length > 0 ? pdfs.map((pdf, index) => (
+
+              <div key={index} className="py-5 flex gap-4 items-center">
                 <img
                 className="w-[3.75rem] h-[3.75rem] rounded-lg"
                 src="/assets/img/pdf.png"
@@ -321,30 +336,14 @@ const ProfileSettingsTab: React.FC<ProfileSettingsTabProps> = ({ userData, setDa
                 <span className="text-lg opacity-50">{pdf?.type}</span>
                 </div>
               </div>	
+                    
+          ))        
 
-          </div>	
-
-        </div>
-
-      ))
-
+  
 		:
 
-      <div className="flex flex-col gap-8">
-      	<div className="flex gap-4 justify-between items-center">
-				<span className="text-heading-sm">Documents</span>
-				<LinkButton
-					className="tz-md tz-primary"
-					onClick={handleOpenDocumentModal}
-				>
-					Update your documents
-					<Image className="w-5 h-5 filter-primary" src={PlusCircleIcon} alt="plus" />
-				</LinkButton>
-				</div>      
-
-
-          <div className="flex flex-col p-7 bg-white border-2 border-gray-50 rounded-2xl">
-
+          
+            <>
             <div className="py-5 flex gap-4 items-center">
               <img
               className="w-[3.75rem] h-[3.75rem] rounded-lg"
@@ -377,12 +376,13 @@ const ProfileSettingsTab: React.FC<ProfileSettingsTabProps> = ({ userData, setDa
             </div>
             <span className="text-lg opacity-50">PDF</span>
             </div>
-          </div>		
+          </div>	
+          </>	
 
-        </div>	
-
-		  </div>
 		}
+    </div>
+    
+    </div>
 
 
 

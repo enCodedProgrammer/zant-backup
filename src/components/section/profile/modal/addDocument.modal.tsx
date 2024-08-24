@@ -1,7 +1,9 @@
 import Button from "@/components/button";
+import { useStepContext } from "@mui/material";
 import axios from "axios";
 import { useState, ChangeEvent, FormEvent } from "react";
 import { toast } from 'react-toastify';
+
 
 
 interface AddDocumentModalProps {
@@ -23,6 +25,7 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const [fileSelected, setFileSelected] = useState<boolean>(false);
   const [pictureChanged, setPicturechanged] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const notifySuccess = () => toast.success(uploadStatus || "PDF Uploaded Successfully", 
 		{position: "bottom-left"},
@@ -42,6 +45,7 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({
   };
 
   const handleSubmit = async (e: FormEvent) => {
+    setIsLoading(true)
     e.preventDefault();
 
     if (!pdfFile) {
@@ -57,7 +61,7 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({
     formData.append('content', pdfFile);
 
     try {
-      const response = await axios.patch('https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/pdf_upload', formData, {
+      const response = await axios.post('https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/pdf_upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${auth}`,          
@@ -68,7 +72,7 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({
           Authorization: `Bearer ${auth}`,
         },
       });
-
+      setIsLoading(false)
       setData(authResponse.data);
       setPicturechanged(true);    
       setShowDocumentModal(!showDocumentModal)       
@@ -78,6 +82,7 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({
     } catch (error) {
       setUploadStatus('Failed to upload PDF.');
       notifyError()
+      setIsLoading(false)
       console.error('Upload error:', error);
     }
   };
@@ -135,9 +140,15 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({
                   {pdfFile?.name}
                 </label>
               <div className="w-full text-center pt-8">
+                {isLoading ?
+                <Button className="tz-md tz-primary !w-64" type="submit" disabled>
+                  Upload PDF
+                </Button>
+                :
                 <Button className="tz-md tz-primary !w-64" type="submit">
                   Upload PDF
                 </Button>
+}
               </div>
               </>              
               
@@ -148,6 +159,12 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({
           </div>
         </div>
       )}
+
+      {isLoading && 
+      <div className="absolute">
+      <svg xmlns="http://www.w3.org/2000/svg" width="50px" height="50px" viewBox="0 0 200 200"><radialGradient id="a12" cx=".66" fx=".66" cy=".3125" fy=".3125" gradientTransform="scale(1.5)"><stop offset="0" stop-color="#FF156D"></stop><stop offset=".3" stop-color="#FF156D" stop-opacity=".9"></stop><stop offset=".6" stop-color="#FF156D" stop-opacity=".6"></stop><stop offset=".8" stop-color="#FF156D" stop-opacity=".3"></stop><stop offset="1" stop-color="#FF156D" stop-opacity="0"></stop></radialGradient><circle transform-origin="center" fill="none" stroke="url(#a12)" stroke-width="15" stroke-linecap="round" stroke-dasharray="200 1000" stroke-dashoffset="0" cx="100" cy="100" r="70"><animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="2" values="360;0" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite"></animateTransform></circle><circle transform-origin="center" fill="none" opacity=".2" stroke="#FF156D" stroke-width="15" stroke-linecap="round" cx="100" cy="100" r="70"></circle></svg>
+      </div>
+      }
     </div>
   );
 };

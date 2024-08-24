@@ -45,6 +45,7 @@ const AddContributorModal: React.FC<AddContributorModalProps> = ({
 
   const [contributorAdded, setContributorAdded] = useState<boolean>(false)
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const notifySuccess = () => toast.success(uploadStatus || "New Contributor Added", 
 		{position: "bottom-left"},
@@ -68,6 +69,7 @@ const AddContributorModal: React.FC<AddContributorModalProps> = ({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
 
     const randomColor = Math.floor(Math.random()*16777215).toString(16);
@@ -93,10 +95,13 @@ const AddContributorModal: React.FC<AddContributorModalProps> = ({
       setContributorAdded(true)
       setShowModal(!showModal)
       console.log('Response:', response.data);
+      setIsLoading(false)
     } catch (error) {
       console.error('Error submitting form:', error);
       setUploadStatus("Error adding new contributor")
       notifyError()
+      setIsLoading(false)
+
     }
 
     const refetch = await axios.get("https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/auth/me", {
@@ -209,9 +214,16 @@ const AddContributorModal: React.FC<AddContributorModalProps> = ({
                   />
                 </div>
                 <div className="w-full text-center pt-8">
+                  {isLoading ?
+                  <Button type="submit" className="tz-md tz-primary !w-48" disabled>
+                    Invite contributor
+                  </Button>
+                  :
                   <Button type="submit" className="tz-md tz-primary !w-48">
                     Invite contributor
                   </Button>
+                  }
+
                 </div>
 
                 {uploadStatus && <p className="text-center pt-4">{uploadStatus}</p>}
@@ -220,6 +232,12 @@ const AddContributorModal: React.FC<AddContributorModalProps> = ({
           </div>
         </div>
       )}
+
+      {isLoading && 
+      <div className="absolute">
+      <svg xmlns="http://www.w3.org/2000/svg" width="50px" height="50px" viewBox="0 0 200 200"><radialGradient id="a12" cx=".66" fx=".66" cy=".3125" fy=".3125" gradientTransform="scale(1.5)"><stop offset="0" stop-color="#FF156D"></stop><stop offset=".3" stop-color="#FF156D" stop-opacity=".9"></stop><stop offset=".6" stop-color="#FF156D" stop-opacity=".6"></stop><stop offset=".8" stop-color="#FF156D" stop-opacity=".3"></stop><stop offset="1" stop-color="#FF156D" stop-opacity="0"></stop></radialGradient><circle transform-origin="center" fill="none" stroke="url(#a12)" stroke-width="15" stroke-linecap="round" stroke-dasharray="200 1000" stroke-dashoffset="0" cx="100" cy="100" r="70"><animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="2" values="360;0" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite"></animateTransform></circle><circle transform-origin="center" fill="none" opacity=".2" stroke="#FF156D" stroke-width="15" stroke-linecap="round" cx="100" cy="100" r="70"></circle></svg>
+      </div>
+      }
     </div>
   );
 };
