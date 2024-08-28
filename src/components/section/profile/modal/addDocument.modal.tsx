@@ -74,6 +74,7 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({
       });
       setIsLoading(false)
       setData(authResponse.data);
+      localStorage.setItem("ZANT_USER", JSON.stringify(authResponse.data));
       setPicturechanged(true);    
       setShowDocumentModal(!showDocumentModal)       
       setUploadStatus('PDF uploaded successfully!');

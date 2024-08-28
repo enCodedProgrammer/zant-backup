@@ -1,6 +1,6 @@
 import Button from "@/components/button";
 import NotificationItem from "@/components/notification";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { notFound } from "next/navigation";
 import { useState, ChangeEvent, FormEvent } from "react";
 import { toast } from 'react-toastify';
@@ -22,6 +22,10 @@ interface FormData {
   user_permission: string;
   partneruser_id: number;
   key: any;
+}
+
+interface ErrorResponse {
+  message: string;
 }
 
 const AddContributorModal: React.FC<AddContributorModalProps> = ({
@@ -46,16 +50,28 @@ const AddContributorModal: React.FC<AddContributorModalProps> = ({
   const [contributorAdded, setContributorAdded] = useState<boolean>(false)
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState(0)
 
   const notifySuccess = () => toast.success(uploadStatus || "New Contributor Added", 
 		{position: "bottom-left"},
 		
 
 	);
-	const notifyError = () => toast.error(uploadStatus || "Error Adding New Contributor",
-		{position: "bottom-left"}
 
+  const notifyError = () => {
+		if(isError == 3){
+		toast.error(uploadStatus,
+		{position: "bottom-left"}
+	)
+  setIsLoading(false)
+ } else {
+	toast.error(uploadStatus || "Error Adding New Contributor",
+		{position: "bottom-left"}
 	);
+}
+}
+
+
 
 
 
@@ -71,6 +87,13 @@ const AddContributorModal: React.FC<AddContributorModalProps> = ({
     e.preventDefault();
     setIsLoading(true);
 
+    let emailInput = document.getElementById("email") as HTMLInputElement
+    if (!emailInput?.validity?.valid) {
+        setIsError(3)
+        notifyError()
+        return
+        // email is valid
+    }
 
     const randomColor = Math.floor(Math.random()*16777215).toString(16);
     const dummyImage = `https://singlecolorimage.com/get/${randomColor}/300x300`;
@@ -97,11 +120,17 @@ const AddContributorModal: React.FC<AddContributorModalProps> = ({
       console.log('Response:', response.data);
       setIsLoading(false)
     } catch (error) {
-      console.error('Error submitting form:', error);
-      setUploadStatus("Error adding new contributor")
-      notifyError()
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<ErrorResponse>;
+			if (axiosError.response && axiosError.response?.data.message) {
+			console.log("the error", axiosError)
+      const errorMessage = axiosError.response.data.message as string
+      setUploadStatus(errorMessage)
       setIsLoading(false)
-
+			setIsError(axiosError.response?.status);
+			notifyError();
+    }
+    }
     }
 
     const refetch = await axios.get("https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/auth/me", {
@@ -109,7 +138,10 @@ const AddContributorModal: React.FC<AddContributorModalProps> = ({
         Authorization: `Bearer ${auth}`,
       },
     });
-    setData(refetch.data)  };
+    setData(refetch.data)
+    localStorage.setItem("ZANT_USER", JSON.stringify(refetch.data));
+  
+  };
 
   return (
     <div id="add_contributor_modal" className={showModal && !contributorAdded ? 'modal-contributors' : 'modal-add-contributors-hide'}>
@@ -179,6 +211,8 @@ const AddContributorModal: React.FC<AddContributorModalProps> = ({
                   <input
                     className="w-full input rounded-none form-input-margin"
                     name="email_address"
+                    type="email"
+                    id="email"
                     value={formData.email_address}
                     onChange={handleChange}
                   />

@@ -106,17 +106,17 @@ const ProfileSettingsTab: React.FC<ProfileSettingsTabProps> = ({ userData, setDa
               <span className="text-xs text-gray-700 font-roboto">
                 Total Individuals
               </span>
-              <span className="text-xl font-roboto">600</span>
+              <span className="text-xl font-roboto">{userData.partner_statistics ? userData.partner_statistics.individual_impacted : 0}</span>
             </div>
             <div className="flex flex-col px-6 py-3 bg-white border border-gray-25">
               <span className="text-xs text-gray-700 font-roboto">
                 Price Per Seat
               </span>
-              <span className="text-xl font-roboto">$100</span>
+              <span className="text-xl font-roboto">{userData.partner_statistics ? userData.partner_statistics.price_per_seat : 0}</span>
             </div>
             <div className="flex flex-col px-6 py-3 bg-white border border-gray-25">
               <span className="text-xs text-gray-700 font-roboto">Total Cost</span>
-              <span className="text-xl font-roboto">$60,000</span>
+              <span className="text-xl font-roboto">{userData.partner_statistics ? userData.partner_statistics.total_spent : 0}</span>
             </div>
           </div>
         </div>

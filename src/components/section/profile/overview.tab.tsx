@@ -96,9 +96,9 @@ const activityData: ChartData<"bar", number[], string> = {
 					<div className="flex flex-col gap-5">
 						<span className="text-heading-sm">Contract Overview</span>
 						<div className="grid grid-cols-3 gap-7">
-							<StatCard title="Invited Seats" value="590" additionalText="+ 5%" />
-							<StatCard title="Price per seat" value="$100" additionalText="+ 2%" />
-							<StatCard title="Total Spent" value="$59,000" additionalText="+ 5%" />
+							<StatCard title="Invited Seats" value={userData?.partner_statistics ? userData?.partner_statistics.invited_seat : 0} additionalText="+ 5%" />
+							<StatCard title="Price per seat" value={userData?.partner_statistics ? userData?.partner_statistics.price_per_seat : 0} additionalText="+ 2%" />
+							<StatCard title="Total Spent" value={userData?.partner_statistics ? userData?.partner_statistics.total_spent : 0} additionalText="+ 5%" />
 						</div>
 					</div>
 
@@ -107,34 +107,42 @@ const activityData: ChartData<"bar", number[], string> = {
 						<div className="grid grid-cols-3 gap-7">
 							<StatCard title="Active Members" value="2,400" additionalText="+ 5%" />
 							<StatCard title="Inactive Memebers" value="197" additionalText="+ 2%" />
-							<StatCard title="Total session" value="10.1k" additionalText="+ 5%" />
+							<StatCard title="Total session" value={userData?.partner_statistics ? userData?.partner_statistics.total_session : 0} additionalText="+ 5%" />
 						</div>
 					</div>
 				</div>
 
 				<div className="flex flex-col gap-5">
-					<span className="text-heading-sm">Main Contact</span>
+				<span className="text-heading-sm">Main Contact</span>
+				{userData?._partnercontributor_of_partneruser[0] && ( // Check if the first contributor exists
 					<div className="flex flex-col bg-white rounded-2xl border-2 border-gray-50 p-9 gap-9">
-						<div className="flex gap-5 items-center justify-between">
-							<Avatar className="!w-28 !h-28" url="/assets/img/ad.png" />
-							<div className="flex-1 flex flex-col justify-center gap-1">
-								<span className="text-heading-2xs">Ann Dowart</span>
-								<span className="text-xl">Human Resources</span>
-							</div>
+					<div className="flex gap-5 items-center justify-between">
+						<div className="text-relative">
+						<Avatar className="!w-28 !h-28" url={userData?._partnercontributor_of_partneruser ? userData?._partnercontributor_of_partneruser[0].profile_picture?.url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMWjLWtAaly3VilsK2TfnT4iiX2UehBwpMQ&s"} />
+						<div className="text-heading-lg text-absolute">{userData?._partnercontributor_of_partneruser ? userData._partnercontributor_of_partneruser[0]?.first_name[0].toUpperCase() + " " + userData._partnercontributor_of_partneruser[0]?.last_name[0].toUpperCase() : "AD"}</div>
 						</div>
-						<div className="flex flex-col gap-5">
-							<span className="text-heading-2xs font-regular">Contact Information</span>
-							<span className="text-xl flex gap-3">
-								<Image className="w-8 h-8 filter-gray-400" src={EnvelopeIcon} alt="envelope" />
-								ann.dowart@harvard.edu
-							</span>
-							<span className="text-xl flex gap-3">
-								<Image className="w-8 h-8 filter-gray-400" src={CallIcon} alt="call" />
-								829-394-9507
-							</span>
+						<div className="flex-1 flex flex-col justify-center gap-1">
+						<span className="text-heading-2xs">
+							{userData?._partnercontributor_of_partneruser ? userData._partnercontributor_of_partneruser[0].first_name + " " + userData._partnercontributor_of_partneruser[0].last_name : "Alex Durham"}
+						</span>
+						<span className="text-xl">{userData?._partnercontributor_of_partneruser ? userData._partnercontributor_of_partneruser[0].title : "Human Resources"}</span>
 						</div>
 					</div>
+					<div className="flex flex-col gap-5">
+						<span className="text-heading-2xs font-regular">Contact Information</span>
+						<span className="text-xl flex gap-3">
+						<Image className="w-8 h-8 filter-gray-400" src={EnvelopeIcon} alt="envelope" />
+						{userData?._partnercontributor_of_partneruser ? userData._partnercontributor_of_partneruser[0].email_address : "Alexd@gmail.com"}
+						</span>
+						<span className="text-xl flex gap-3">
+						<Image className="w-8 h-8 filter-gray-400" src={CallIcon} alt="call" />
+						{userData?._partnercontributor_of_partneruser ? userData._partnercontributor_of_partneruser[0].phone :  "+172 274 233 333"}
+						</span>
+					</div>
+					</div>
+				)}
 				</div>
+
 			</div>
 			<div className="rounded-2xl flex items-center justify-center overflow-hidden relative h-[25.5rem] m-20">
 				<img

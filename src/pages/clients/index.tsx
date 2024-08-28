@@ -147,13 +147,27 @@ interface clientProps {
 	  };
 	
 	  useEffect(() => {
-		fetchData();
-	  }, []);
+		//fetchData();
+		const zantMembers = localStorage.getItem("ZANT_MEMBERS")
+		setData(JSON.parse(zantMembers || "[]"))
+		const auth = Cookies.get("authToken")
+		if(!auth) {
+		  router.push('/auth/login');
+	
+		}
+		setLoading(false)	  
+	}, []);
 
 
 	
 
-	if (loading) return <div style={{fontSize:"28px", display:"flex", alignItems:"center", justifyContent: "center", height:"90vh", fontWeight: "700"}}>Loading...</div>;
+	if (loading) 
+	return 
+	<div className="flex" style={{fontSize:"28px", display:"flex", alignItems:"center", justifyContent: "center", height:"90vh", fontWeight: "700"}}>
+		<div className="">
+      <svg xmlns="http://www.w3.org/2000/svg" width="80px" height="80px" viewBox="0 0 200 200"><radialGradient id="a12" cx=".66" fx=".66" cy=".3125" fy=".3125" gradientTransform="scale(1.5)"><stop offset="0" stop-color="#FF156D"></stop><stop offset=".3" stop-color="#FF156D" stop-opacity=".9"></stop><stop offset=".6" stop-color="#FF156D" stop-opacity=".6"></stop><stop offset=".8" stop-color="#FF156D" stop-opacity=".3"></stop><stop offset="1" stop-color="#FF156D" stop-opacity="0"></stop></radialGradient><circle transform-origin="center" fill="none" stroke="url(#a12)" stroke-width="15" stroke-linecap="round" stroke-dasharray="200 1000" stroke-dashoffset="0" cx="100" cy="100" r="70"><animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="2" values="360;0" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite"></animateTransform></circle><circle transform-origin="center" fill="none" opacity=".2" stroke="#FF156D" stroke-width="15" stroke-linecap="round" cx="100" cy="100" r="70"></circle></svg>
+      </div>
+	</div>;
 	if (!data) {
 		router.push('/auth/login');
 		return <div>Error loading data</div>;
@@ -239,6 +253,9 @@ interface clientProps {
 						<th className="text-heading-2xs">Last Active</th>
 					</tr>
 				</thead>
+
+				{data.length > 0 ?
+
 				<tbody>
 					{data.map((user, k) => (
 						<tr key={k}>
@@ -259,14 +276,46 @@ interface clientProps {
 							{user.first_name}
 							</span>
 							</td>
-							<td className="text-heading-2xs font-regular">{user.last_name}</td>
-							<td className="text-heading-2xs font-regular">{user.is_provider ? "Provider" : "Client"}</td>
-							<td className="text-heading-2xs font-regular">{user._session_of_user}</td>
-							<td className="text-heading-2xs font-regular">{user.status==""? "Inactive" : user.status}</td>
-							<td className="text-heading-2xs font-regular">{user.date}</td>
+							<td className="text-heading-2xs font-regular">{user ? user.last_name : "Alex Durham"}</td>
+							<td className="text-heading-2xs font-regular">{user ? user.is_provider ? "Provider" : "Client" : "Provider"}</td>
+							<td className="text-heading-2xs font-regular">{user ? user._session_of_user : 2}</td>
+							<td className="text-heading-2xs font-regular">{user ? user.status==""? "Inactive" : user.status : "Active"}</td>
+							<td className="text-heading-2xs font-regular">{user ? user.date : "5 minutes ago"}</td>
 						</tr>
 					))}
+					
+					</tbody>
+
+					: 
+
+					
+				<tbody>
+					<tr>
+						<td>
+							<input className="checkbox rounded-none" type="checkbox" />
+						</td>
+
+						<td className="cursor-pointer" >
+						<span className="flex gap-10 text-heading-2xs items-center">
+						<img
+						className="w-[5.25rem] h-[5.25rem] rounded-full"
+						src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjDghoMoSPxutcJPHr3TZGVWUk33lBQltZRw&usqp=CAU"
+						alt="avatar"
+						/>										
+						Alex
+						</span>
+						</td>
+						<td className="text-heading-2xs font-regular">Alex Durham</td>
+						<td className="text-heading-2xs font-regular">Provider</td>
+						<td className="text-heading-2xs font-regular">2</td>
+						<td className="text-heading-2xs font-regular">Active</td>
+						<td className="text-heading-2xs font-regular">25th, August</td>
+					</tr>
+	
+				
 				</tbody>
+				
+			}
 			</table>
 
 			<InviteStudentModal />

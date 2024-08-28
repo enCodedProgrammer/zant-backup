@@ -39,7 +39,7 @@ export default function Step4Page() {
     else if (isError == 2)
         errorMessage = (
             <Alert variant="filled" severity="error" className="w-full">
-                Password is required.
+                Password mismatch.
             </Alert>
         )
     else if (isError == 3)
@@ -87,6 +87,35 @@ export default function Step4Page() {
 	
 		return new Blob(byteArrays, { type: mime });
 	}
+
+
+
+
+
+    const fetchUser = async (authToken) => {
+		try {
+
+		  const response = await axios.get("https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/auth/me", {
+			headers: {
+			  Authorization: `Bearer ${authToken}`,
+			},
+		  });
+		
+		  localStorage.setItem("ZANT_USER", JSON.stringify(response.data));
+
+          const allMembers = await axios.get("https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/allmember", {
+			headers: {
+			  Authorization: `Bearer ${authToken}`,
+			},
+		  });
+          localStorage.setItem("ZANT_MEMBERS", JSON.stringify(allMembers.data.items));
+
+		} catch (error) {
+		  console.error("Failed to fetch user data:", error);
+		}
+	  };
+
+
 	
 
 
@@ -108,11 +137,13 @@ export default function Step4Page() {
 
     if (response.data.authToken) {
 		Cookies.set("authToken", response.data.authToken)
+        fetchUser(response.data.authToken);
        router.push("/profile")
        //setIsError(4)
     }
+        console.log("the error", response)
         //setIsError(4)
-        return response
+        //return response
     }
 
     const signUp = async () => {
@@ -143,7 +174,9 @@ export default function Step4Page() {
             localStorage.setItem("ZANT_USER", JSON.stringify(user));
             fetch()
             // router.push("step3")
-        } catch (error) {}
+        } catch (error) {
+            console.log("the error", error)
+        }
     }
     return (
         <div className="flex flex-col min-h-screen">

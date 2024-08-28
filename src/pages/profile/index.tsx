@@ -15,11 +15,46 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 interface UserData {
+  id: number;  
+  name: string;
+  email: string;
+  verified: boolean;
+  Display_name:string;
+  pdf_files: Array<{    
+      name: string;
+      type: string;
+      url: string;
+    }>;
   partnerimage: {
     url: string;
+  };  
+  _partnercontributor_of_partneruser: Array<{
+    id: number;
+    first_name: string;
+    last_name: string;
+    email_address: string;
+    partneruser_id: number;
+    contributor_mobile: string;
+    user_permission: string;
+    title: string;
+    phone: string;
+    profile_picture: {      
+      url: string;
+    };
+  }>;
+  partner_statistics: {
+    id: number;  
+    funded_session: number;
+    individual_impacted: number;
+    invited_seat: number;
+    price_per_seat: number;
+    total_spent: number;
+    partneruser_id: number;
+    total_session: number;
+    Individuals_impacted: number;
   };
-  Display_name: string;
 }
+
 
 export default function ProfilePage() {
   const [tab, setTab] = useState<string>("Organization");
@@ -27,6 +62,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [showProfilePictureModal, setShowProfilePictureModal] = useState<boolean>(false);
   const [authenticationToken, setAuthenticationToken] = useState<string>("")
+
 
   const router = useRouter();
 
@@ -43,39 +79,26 @@ export default function ProfilePage() {
     if (selected && tab !== selected) onSelectTab(selected as string);
   }, [router.query]);
 
-  const fetchData = async () => {
-    try {
-      const authToken = Cookies.get("authToken");
 
-      if (!authToken) {
-        throw new Error("No auth token found, please login.");
-      }
-
-	  setAuthenticationToken(authToken);
-      const response = await axios.get<UserData>("https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/auth/me", {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-
-      setData(response.data);
-      const storedUser = localStorage.getItem('ZANT_USER');
-      if(storedUser){
-      const userObject = JSON.parse(storedUser);
-      userObject.picture = data?.partnerimage;
-      }
-      //localStorage.setItem("ZANT_USER", JSON.stringify(user));
-      console.log("userData", response.data);
-    } catch (err) {
-      console.error("Error fetching data:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    fetchData();
+    const zantUser = localStorage.getItem("ZANT_USER")
+    setData(JSON.parse(zantUser || "{}"))
+    const auth = Cookies.get("authToken")
+    setAuthenticationToken(auth)
+    if(!auth) {
+      router.push('/auth/login');
+
+    }
+    setLoading(false)
   }, []);
+
+
+  useEffect(() => {
+    const zantUser = localStorage.getItem("ZANT_USER")
+    setData(JSON.parse(zantUser || "{}"))
+    setLoading(false)
+  }, [setData]);
 
   const handleOpenProfilePictureModal = () => {
     setShowProfilePictureModal(true);
@@ -83,11 +106,7 @@ export default function ProfilePage() {
   };
 
   if (loading) return <div style={{fontSize:"28px", display:"flex", alignItems:"center", justifyContent: "center", height:"90vh", fontWeight: "700"}}>Loading...</div>;
-  if (!data) {
-	router.push('/auth/login');
-    return <div>Error loading data</div>;
-	
-  }
+
 
   return (
     <div className="flex flex-col mt-24 modal-relative">
@@ -96,13 +115,13 @@ export default function ProfilePage() {
       </div>
       <div className="flex gap-24 items-center px-8 py-5 relative justify-between">
         <div className="flex flex-col p-8 gap-2 border-gray-50 border rounded-2xl !w-[21rem]">
-          <span className="text-display-xs text-center">$1000</span>
+          <span className="text-display-xs text-center">${data?.partner_statistics ? data?.partner_statistics.funded_session : 0}</span>
           <span className="text-xl text-center">Funded Sessions</span>
         </div>
 
         <div className="flex flex-col items-center">
           <div className="w-60 h-60 relative">
-            <Avatar url={data.partnerimage?.url} />
+            <Avatar url={data?.partnerimage?.url} />
             <IconButton className="absolute bottom-5 right-5 tz-sm tz-circle !w-10 !h-10" onClick={handleOpenProfilePictureModal}>
               <Image src={EditIcon} alt="edit icon" />
             </IconButton>
@@ -114,7 +133,7 @@ export default function ProfilePage() {
         </div>
 
         <div className="flex flex-col p-8 gap-2 border-gray-50 border rounded-2xl !w-[21rem]">
-          <span className="text-display-xs text-center">590</span>
+          <span className="text-display-xs text-center">{data?.partner_statistics ? data?.partner_statistics.individual_impacted : 0}</span>
           <span className="text-xl text-center">Individuals Impacted</span>
         </div>
       </div>

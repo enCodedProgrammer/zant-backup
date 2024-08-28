@@ -5,14 +5,56 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useState } from "react"
-import axios from "axios"
+import axios, {AxiosError} from "axios"
 import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
+
+
 
 
 export default function LoginPage() {
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
+	const [isError, setIsError] = useState(0)
+
+	const notifyError = () => {
+		if(isError == 500)
+		toast.error("Invalid Credentials",
+		{position: "bottom-left"}
+	);
+	if(isError == 3)
+		toast.error("Input a valid email",
+		{position: "bottom-left"}
+	);
+
+	}
+
+
 	const router = useRouter()
+
+	const fetchData = async (authToken) => {
+		try {
+
+		  const response = await axios.get("https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/auth/me", {
+			headers: {
+			  Authorization: `Bearer ${authToken}`,
+			},
+		  });
+		
+		  localStorage.setItem("ZANT_USER", JSON.stringify(response.data));
+
+		  const allMembers = await axios.get("https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/allmember", {
+			headers: {
+			  Authorization: `Bearer ${authToken}`,
+			},
+		  });
+		  localStorage.setItem("ZANT_MEMBERS", JSON.stringify(allMembers.data.items));
+
+		} catch (error) {
+		  console.error("Failed to fetch user data:", error);
+		}
+	  };
+
 
 	const signIn = async (email, password) => {
 		try {
@@ -27,22 +69,38 @@ export default function LoginPage() {
 	
 		  console.log('User signed in successfully:', response.data);
 		  console.log("login data", response.data);
-			if (response.data.authToken) {
-				console.log("cookie set", response.data.authToken);
-				Cookies.set('authToken', response.data.authToken, { expires: 7 });
-			 }
+			if (response.data.authToken) {				
+				return response.data.authToken;
+			}			
 		} catch (error) {
-		  throw error;
+			const axiosError = error as AxiosError;
+			if (axiosError.response) {
+			console.log("the error", axiosError)
+			setIsError(axiosError.response?.status);
+			notifyError();
+		  //throw error;
+			}
 		}
 	  };
 	
 	  const handleSignIn = async () => {
-		console.log(email, password)
+		console.log(email, password)		
 	
 		try {
+			let emailInput = document.getElementById("email") as HTMLInputElement
+            if (!emailInput?.validity?.valid) {
+                setIsError(3)
+				notifyError()
+                return
+                // email is valid
+            }
 		  const response = await signIn(email, password);		  
-				
-		  router.push('/profile');
+		  if (response) {
+			Cookies.set('authToken', response, { expires: 7 });
+
+			fetchData(response);
+			router.push("/profile")
+		 }		  
 		} catch (error) {
 		} finally {
 		}
@@ -76,7 +134,8 @@ export default function LoginPage() {
 				<div className="flex flex-1 flex-col justify-between">
 					<div className="flex flex-col gap-10">
 						<input
-							type="text"
+							type="email"
+							id="email"
 							placeholder="Email address"
 							className="rounded-none input input-lg input-bordered w-[48rem]"
 							onChange={(e) => setEmail(e.target.value)}

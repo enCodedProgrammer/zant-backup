@@ -69,6 +69,7 @@ const AddProfilePictureModal: React.FC<AddProfilePictureModalProps> = ({
         },
       });
       setData(refetch.data)
+      localStorage.setItem("ZANT_USER", JSON.stringify(refetch.data));
       setPicturechanged(true);    
       setShowProfilePictureModal(!showProfilePictureModal)  
       setUploadStatus('Picture uploaded successfully!');
