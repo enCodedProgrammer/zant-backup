@@ -8,7 +8,7 @@ import { use, useState } from "react"
 
 export default function Step2Page() {
 
-	const [company, setCompany] = useState("");
+	const [company, setCompany] = useState("Non-profit");
 	const router = useRouter()
 
 
@@ -53,7 +53,7 @@ export default function Step2Page() {
 						<div className="flex gap-6">
 							<div className="flex align-items-center px-4 py-5 border w-[32rem] text-xl">
 								<select onChange={(e) => setCompany(e.target.value)}>
-									<option selected>Non-Profit</option>
+									<option >Non-Profit</option>
 									<option>Company</option>
 									<option>School</option>
 									<option>Other</option>

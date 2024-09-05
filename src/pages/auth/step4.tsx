@@ -119,11 +119,15 @@ export default function Step4Page() {
 
 
     const fetch = async () => {
+    
+    const formData = new FormData();
+    let blob;
+    if(user?.picture){
 	const mime = user.picture.split(';')[0].split(':')[1];
-	const blob = base64ToBlob(user.picture, mime);
+	blob = base64ToBlob(user.picture, mime);
+    formData.append('Paterner_img', blob, 'image.jpg');
+    }
 
-	const formData = new FormData();
-	formData.append('Paterner_img', blob, 'image.jpg');
 	formData.append("email", email)
 	formData.append("password", password)
 	formData.append("name", user.name)
