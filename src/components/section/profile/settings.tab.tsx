@@ -46,15 +46,15 @@ const ProfileSettingsTab: React.FC<ProfileSettingsTabProps> = ({ userData, setDa
 
   const [pdfs, setPd] = useState<Pdfs[]>([]);
   const [contributors, setContribututors] = useState<Contributor[]>([]);
-  const [initials, setInitials] = useState("");
 
 		
   useEffect(() => {
     if (userData) {
-      setPd(userData?.pdf_files);
+      setPd(userData?.user_doc);
       setContribututors(userData._partnercontributor_of_partneruser)
       }	
   },[userData])
+
 
 
   const handleOpenModal = () => {

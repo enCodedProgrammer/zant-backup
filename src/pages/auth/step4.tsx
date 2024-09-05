@@ -12,8 +12,9 @@ import "react-phone-input-2/lib/style.css"
 import PhoneInput from "react-phone-input-2"
 import PasswordStrengthBar from "react-password-strength-bar"
 import Alert from "@mui/material/Alert"
-import axios from "axios"
+import axios, {AxiosError} from "axios"
 import Cookies from "js-cookie"
+import { responsiveFontSizes } from "@mui/material"
 //import { ZANT_USER } from "@/const/const"
 //import api from "@/api/authAPI"
 
@@ -23,7 +24,9 @@ export default function Step4Page() {
     const [phone, setPhone] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [isValidPassword, setIsValidPassword] = useState(false)
     const [confirmPassword, setConfirmPassword] = useState("")
+    const [checkEmailMessage, setCheckEmailMessage] = useState("")    
     const [agree, setAgree] = useState(false)
     const router = useRouter()
     const [user, setUser] = useState({ name: "", picture: "", company: "" })
@@ -54,6 +57,18 @@ export default function Step4Page() {
                 User already exists.
             </Alert>
         )
+        else if (isError == 5)
+            errorMessage = (
+                <Alert variant="filled" severity="warning" className="w-full">
+                    Password length must be more 6 and contain a number
+                </Alert>
+            )
+            else if (isError == 6)
+                errorMessage = (
+                    <Alert variant="filled" severity="error" className="w-full">
+                        Account Already in use
+                    </Alert>
+                )       
     // else if (isError == 4)
     //  errorMessage = (
     //      <Alert variant="filled" severity="error" className="w-full">
@@ -67,6 +82,17 @@ export default function Step4Page() {
         setEmail(user?.email)
         setUser(user)
     }, [])
+
+    const handlePasswordChange = (e)=> {        
+        setPassword(e.target.value)
+        const integerCheck = /\d/.test(e.target.value)   
+        console.log(integerCheck)     
+        if(password.length > 6 && integerCheck) {
+            setIsValidPassword(true)
+        } else { setIsValidPassword(false)}
+
+
+    }
 
 
 
@@ -89,33 +115,6 @@ export default function Step4Page() {
 	}
 
 
-
-
-
-    const fetchUser = async (authToken) => {
-		try {
-
-		  const response = await axios.get("https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/auth/me", {
-			headers: {
-			  Authorization: `Bearer ${authToken}`,
-			},
-		  });
-		
-		  localStorage.setItem("ZANT_USER", JSON.stringify(response.data));
-
-          const allMembers = await axios.get("https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/allmember", {
-			headers: {
-			  Authorization: `Bearer ${authToken}`,
-			},
-		  });
-          localStorage.setItem("ZANT_MEMBERS", JSON.stringify(allMembers.data.items));
-
-		} catch (error) {
-		  console.error("Failed to fetch user data:", error);
-		}
-	  };
-
-
 	
 
 
@@ -124,27 +123,36 @@ export default function Step4Page() {
 	const blob = base64ToBlob(user.picture, mime);
 
 	const formData = new FormData();
-	formData.append('partnersfile', blob, 'image.jpg');
+	formData.append('Paterner_img', blob, 'image.jpg');
 	formData.append("email", email)
 	formData.append("password", password)
-	formData.append("Display_name", user.name)
+	formData.append("name", user.name)
 
-	const response = await axios.post('https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/auth/signup', formData, {
+    try {
+
+	const response = await axios.post('https://xxnw-3kjn-ltca.n7c.xano.io/api:dRDS80y8/auth/verify_email/signup', formData, {
 		headers: {
 			'Content-Type': 'multipart/form-data'
 		}
 	})
 
-    if (response.data.authToken) {
-		Cookies.set("authToken", response.data.authToken)
-        fetchUser(response.data.authToken);
-       router.push("/profile")
+    if (response.data.Message) {
+		//Cookies.set("authToken", response.data.authToken)
+        setCheckEmailMessage(response.data.Message)
+        //fetchUser(response.data.authToken);
+       //router.push("/profile")
        //setIsError(4)
     }
-        console.log("the error", response)
+ } catch (error) {
+    const axiosError = error as AxiosError;
+    if (axiosError?.response?.status == 403) {    
+        setIsError(6)
+    }
+        //console.log("the error", response)
         //setIsError(4)
         //return response
     }
+ } 
 
     const signUp = async () => {
         try {
@@ -160,6 +168,10 @@ export default function Step4Page() {
             // need UI work
             if (password == "") {
                 setIsError(1)
+                return
+            }
+            if(!isValidPassword){
+                setIsError(5)
                 return
             }
             if (password != confirmPassword) {
@@ -188,6 +200,14 @@ export default function Step4Page() {
             <header className="py-12 flex justify-center">
                 <Logo className="w-[7.5rem] h-10" />
             </header>
+
+            {checkEmailMessage !== "" ?
+            <div className="flex-1 flex flex-col items-center justify-between px-[7.5rem] py-12 self-stretch grow gap-20">
+                <div className="text-heading-3xl font-bold text-center">
+                    {checkEmailMessage}
+                </div>
+            </div>
+            :
             <div className="flex-1 flex flex-col items-center justify-between px-[7.5rem] py-12 self-stretch grow gap-20">
                 <div className="flex flex-col gap-4 items-center">
                     <div className="text-lead-md text-gray-400">Sign up</div>
@@ -233,7 +253,7 @@ export default function Step4Page() {
                                 type="password"
                                 placeholder="Password"
                                 className="input input-lg input-bordered rounded-none w-[26rem]"
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={(e) => handlePasswordChange(e)}
                             />
                             <input
                                 type="password"
@@ -278,6 +298,7 @@ export default function Step4Page() {
                     </Button>
                 </div>
             </div>
+            }
         </div>
     )
 }

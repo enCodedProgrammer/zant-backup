@@ -19,13 +19,13 @@ interface UserData {
   name: string;
   email: string;
   verified: boolean;
-  Display_name:string;
-  pdf_files: Array<{    
+  display_name:string;
+  user_doc: Array<{    
       name: string;
       type: string;
       url: string;
     }>;
-  partnerimage: {
+  partnersimg: {
     url: string;
   };  
   _partnercontributor_of_partneruser: Array<{
@@ -121,13 +121,13 @@ export default function ProfilePage() {
 
         <div className="flex flex-col items-center">
           <div className="w-60 h-60 relative">
-            <Avatar url={data?.partnerimage?.url} />
+            <Avatar url={data?.partnersimg?.url} />
             <IconButton className="absolute bottom-5 right-5 tz-sm tz-circle !w-10 !h-10" onClick={handleOpenProfilePictureModal}>
               <Image src={EditIcon} alt="edit icon" />
             </IconButton>
           </div>
           <div className="flex flex-col items-center">
-            <p className="text-heading-2xl font-medium">{data?.Display_name}</p>
+            <p className="text-heading-2xl font-medium">{data?.name}</p>
             <span className="text-heading-xs font-regular">Zant Partner</span>
           </div>
         </div>

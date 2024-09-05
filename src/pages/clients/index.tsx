@@ -180,14 +180,7 @@ interface clientProps {
 			<div className="fixed top-5 right-40 left-56 z-50 pl-8">
 				<div className="flex gap-10 items-center">
 					<h1 className="text-heading-2xl">Clients</h1>
-					<div className="flex gap-3 items-center">
-						<span className="text-sm font-roboto">Filter by:</span>
-						<Pill className="tz-sm tz-primary">Date range</Pill>
-						<Pill className="tz-sm tz-primary">Type</Pill>
-						<Pill className="tz-sm tz-primary">Sessions</Pill>
-						<Pill className="tz-sm tz-primary">Flagged</Pill>
-						<Pill className="tz-sm tz-primary">Status</Pill>
-					</div>
+
 				</div>
 			</div>
 
@@ -276,7 +269,7 @@ interface clientProps {
 							{user.first_name}
 							</span>
 							</td>
-							<td className="text-heading-2xs font-regular">{user ? user.last_name : "Alex Durham"}</td>
+							<td className="text-heading-2xs font-regular">{user ? user.last_name : "Durham"}</td>
 							<td className="text-heading-2xs font-regular">{user ? user.is_provider ? "Provider" : "Client" : "Provider"}</td>
 							<td className="text-heading-2xs font-regular">{user ? user._session_of_user : 2}</td>
 							<td className="text-heading-2xs font-regular">{user ? user.status==""? "Inactive" : user.status : "Active"}</td>
@@ -305,11 +298,11 @@ interface clientProps {
 						Alex
 						</span>
 						</td>
-						<td className="text-heading-2xs font-regular">Alex Durham</td>
+						<td className="text-heading-2xs font-regular"> Durham</td>
 						<td className="text-heading-2xs font-regular">Provider</td>
 						<td className="text-heading-2xs font-regular">2</td>
 						<td className="text-heading-2xs font-regular">Active</td>
-						<td className="text-heading-2xs font-regular">25th, August</td>
+						<td className="text-heading-2xs font-regular">5 minutes ago</td>
 					</tr>
 	
 				

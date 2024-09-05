@@ -18,9 +18,11 @@ export default function Step2Page() {
 	const storedUser = localStorage.getItem('user');
       if (storedUser) {
          const userObject = JSON.parse(storedUser);
-
+		const _partnercontributor_of_partneruser = []
          // Update the name and save the updated object back to localStorage
          userObject.company = company;
+		 userObject._partnercontributor_of_partneruser = _partnercontributor_of_partneruser
+
          localStorage.setItem('user', JSON.stringify(userObject));
 
          console.log('User object updated:', userObject);

@@ -53,7 +53,7 @@ const activityData: ChartData<"bar", number[], string> = {
 		
 		useEffect(() => {
 			if (userData) {
-				setPd(userData?.pdf_files);
+				setPd(userData?.user_doc);
 			  }	
 		},[userData])
 
@@ -114,7 +114,9 @@ const activityData: ChartData<"bar", number[], string> = {
 
 				<div className="flex flex-col gap-5">
 				<span className="text-heading-sm">Main Contact</span>
-				{userData?._partnercontributor_of_partneruser[0] && ( // Check if the first contributor exists
+				{userData?._partnercontributor_of_partneruser.length >0
+				
+				?
 					<div className="flex flex-col bg-white rounded-2xl border-2 border-gray-50 p-9 gap-9">
 					<div className="flex gap-5 items-center justify-between">
 						<div className="text-relative">
@@ -140,7 +142,35 @@ const activityData: ChartData<"bar", number[], string> = {
 						</span>
 					</div>
 					</div>
-				)}
+					:
+					
+					<div className="flex flex-col bg-white rounded-2xl border-2 border-gray-50 p-9 gap-9">
+					<div className="flex gap-5 items-center justify-between">
+						<div className="text-relative">
+						<Avatar className="!w-28 !h-28" url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMWjLWtAaly3VilsK2TfnT4iiX2UehBwpMQ&s" />
+						<div className="text-heading-lg text-absolute">AD</div>
+						</div>
+						<div className="flex-1 flex flex-col justify-center gap-1">
+						<span className="text-heading-2xs">
+							Alex Durham
+						</span>
+						<span className="text-xl">Human Resources</span>
+						</div>
+					</div>
+					<div className="flex flex-col gap-5">
+						<span className="text-heading-2xs font-regular">Contact Information</span>
+						<span className="text-xl flex gap-3">
+						<Image className="w-8 h-8 filter-gray-400" src={EnvelopeIcon} alt="envelope" />
+						Alexd@gmail.com
+						</span>
+						<span className="text-xl flex gap-3">
+						<Image className="w-8 h-8 filter-gray-400" src={CallIcon} alt="call" />
+						+172 274 233 333
+						</span>
+					</div>
+					</div>					
+
+				}
 				</div>
 
 			</div>
